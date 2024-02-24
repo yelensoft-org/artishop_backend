@@ -1,6 +1,5 @@
 package com.yelensoft.artishop_backend.model;
 
-import com.yelensoft.artishop_backend.enumClass.NotificationType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -9,20 +8,15 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class Notification {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Lob
     @NotBlank
-    private String tittle;
-
-    @NotBlank String content;
-
-    @NotBlank
-    @Enumerated(EnumType.STRING)
-    private NotificationType type;
+    private String content;
 
     private LocalDateTime creationDate = LocalDateTime.now();
 
@@ -30,4 +24,10 @@ public class Notification {
 
     @ManyToOne
     private Users users;
+
+    @ManyToOne
+    private Store store;
+
+    @ManyToOne
+    private Product product;
 }

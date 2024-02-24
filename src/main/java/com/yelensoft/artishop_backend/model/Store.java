@@ -26,7 +26,10 @@ public class Store {
     private String imageUrl;
 
     @NotBlank
-    private String numTel;
+    private String numTel1;
+
+    @NotBlank
+    private String numTel2;
 
     @NotBlank
     @Email
@@ -47,5 +50,11 @@ public class Store {
     private double totalValueVote = 0.0;
 
     private double nbreStar = 0.0;
+
+    @OneToOne
+    private Users users;
+
+    @OneToOne
+    private Address address;
 
 }
