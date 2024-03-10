@@ -1,5 +1,6 @@
 package com.yelensoft.artishop_backend.model;
 
+import com.yelensoft.artishop_backend.enumClass.StoreStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class Order {
+public class ProductOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +20,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @NotBlank(message = "status vide")
-    private String status;
+    private StoreStatus status;
 
     @NotNull(message = "nbProductItem null")
     @Min(value = 1, message = "nbProductItem, valeur incorrecte")

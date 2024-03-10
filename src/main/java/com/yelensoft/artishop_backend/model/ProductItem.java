@@ -27,5 +27,5 @@ public class ProductItem {
     private ProductConfig productConfig;
 
     @ManyToOne
-    private Order order;
+    private ProductOrder productOrder;
 }
