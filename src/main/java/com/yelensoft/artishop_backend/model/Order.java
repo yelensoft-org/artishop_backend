@@ -1,5 +1,6 @@
 package com.yelensoft.artishop_backend.model;
 
+import com.yelensoft.artishop_backend.enumClass.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -19,7 +20,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @NotBlank(message = "status vide")
-    private String status;
+    private OrderStatus status;
 
     @NotNull(message = "nbProductItem null")
     @Min(value = 1, message = "nbProductItem, valeur incorrecte")
