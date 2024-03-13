@@ -50,5 +50,7 @@ public abstract class Person {
     protected PersonRole role;
 
     @OneToOne
-    protected Address address;
+    protected UserAddress address;
+
+
 }

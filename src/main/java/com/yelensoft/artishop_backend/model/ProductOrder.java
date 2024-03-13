@@ -1,5 +1,6 @@
 package com.yelensoft.artishop_backend.model;
 
+
 import com.yelensoft.artishop_backend.enumClass.StoreStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
@@ -40,7 +41,7 @@ public class ProductOrder {
     private Users users;
 
     @ManyToOne
-    private Address address;
+    private UserAddress address;
 
     @ManyToOne
     private PaymentMethod paymentMethod;
