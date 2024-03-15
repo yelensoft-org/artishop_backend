@@ -39,7 +39,7 @@ public abstract class Person {
 
     protected boolean deleted = false;
 
-    protected LocalDateTime updateDate;
+    protected LocalDateTime updateDate = LocalDateTime.now();
 
     @NotBlank
     @Enumerated(EnumType.STRING)
