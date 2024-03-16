@@ -9,6 +9,7 @@ public class ArtishopBackendApplication {
 
 //        System.setProperty( "spring.devtools.restart.enabled" , "false" );
         SpringApplication.run(ArtishopBackendApplication.class, args);
+        System.out.print("le big boss lonpo");
     }
 
 }
