@@ -37,7 +37,7 @@ public class ProductOrder {
     private boolean deleted = false;
 
     @ManyToOne
-    private Users users;
+    private User user;
 
     @ManyToOne
     private Address address;

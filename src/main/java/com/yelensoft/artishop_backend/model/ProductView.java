@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class ProductConfig {
+public class ProductView {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class ProductConfig {
 
     @NotBlank(message = "champs imageUrl vide")
     @Size(min = 2, message = "champs imageUrl, nombre de caractère incorrecte")
-    private String imageUrl;
+    private String imageUrls;
 
     @NotNull(message = "nbAvailable null")
     @Min(value = 1, message = "valeur nbAvailable incorrecte")

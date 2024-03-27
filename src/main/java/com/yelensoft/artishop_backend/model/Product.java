@@ -18,11 +18,9 @@ public class Product {
     @Size(min = 2, max = 30, message = "invalid number of characters")
     private String name;
 
-    @NotNull(message = "price null")
     @DecimalMin(value = "0.1", message = "price, valeur incorrecte")
     private double price;
 
-    @NotNull
     @Min(value = 1)
     private int stockQuantity;
 

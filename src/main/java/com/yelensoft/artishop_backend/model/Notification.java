@@ -29,5 +29,5 @@ public class Notification {
     private boolean deleted = false;
 
     @ManyToOne
-    private Users users;
+    private User user;
 }

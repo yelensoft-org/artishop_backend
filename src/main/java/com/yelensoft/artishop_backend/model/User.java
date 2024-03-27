@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class Users extends Person{
+public class User extends Person{
 
     @OneToOne
     private Cart cart;
