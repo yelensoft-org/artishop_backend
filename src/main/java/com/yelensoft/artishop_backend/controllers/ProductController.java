@@ -1,5 +1,6 @@
 package com.yelensoft.artishop_backend.controllers;
 
+import com.yelensoft.artishop_backend.dto.AddProductDto;
 import com.yelensoft.artishop_backend.model.Product;
 import com.yelensoft.artishop_backend.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,14 +15,17 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/v1/")
 public class ProductController {
-    @Autowired
-    private ProductService productService;
+    final private ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @PostMapping("users/{userId}/stores/{storeId}/products/add")
     @Operation(summary = "Ajout d'un nouveau produit par un artisan")
     public ResponseEntity<Product> addProduct(@PathVariable Long userId, @PathVariable Long storeId,
-                                              @Valid @RequestBody Product product) {
-        return productService.addProduct(userId, storeId, product);
+                                              @Valid @RequestBody AddProductDto request) {
+        return productService.addProduct(userId, storeId, request);
     }
 
     @Operation(summary = "Récuperer les produits stocker dans une boutique")

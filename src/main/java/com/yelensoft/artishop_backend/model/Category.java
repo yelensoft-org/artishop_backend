@@ -1,15 +1,16 @@
 package com.yelensoft.artishop_backend.model;
 
+import com.yelensoft.artishop_backend.enumClass.SizeType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Data
-public class Product {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,22 +20,17 @@ public class Product {
     @Size(min = 2, max = 30, message = "invalid number of characters")
     private String name;
 
-    @DecimalMin(value = "0.1", message = "price, valeur incorrecte")
-    private double price;
-
-    @Min(value = 1)
-    private int stockQuantity;
-
-    private boolean published = false;
-
     @Lob
     @NotBlank(message = "description vide")
     private String description;
 
-    @NotBlank
-    private String globalSize;
+    @NotBlank(message = "champs imageUrl vide")
+    @Size(min = 2, message = "champs imageUrl, nombre de caractère incorrecte")
+    private String imageUrl;
 
-    private boolean available = true;
+    @Enumerated(EnumType.STRING)
+    @NotBlank(message = "sizeType vide")
+    private SizeType sizeType;
 
     private LocalDateTime creationDate = LocalDateTime.now();
 
@@ -42,9 +38,7 @@ public class Product {
 
     private boolean deleted = false;
 
-    @ManyToOne
-    private Store store;
 
-    @ManyToMany
-    private List<Category> categories;
+
+
 }

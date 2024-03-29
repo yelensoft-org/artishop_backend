@@ -1,6 +1,5 @@
 package com.yelensoft.artishop_backend.controllers;
 
-import com.yelensoft.artishop_backend.model.Product;
 import com.yelensoft.artishop_backend.model.ProductView;
 import com.yelensoft.artishop_backend.services.ProductViewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,8 +14,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/v1/")
 public class ProductViewController {
-    @Autowired
-    private ProductViewService productViewService;
+    final private ProductViewService productViewService;
+
+    public ProductViewController(ProductViewService productViewService) {
+        this.productViewService = productViewService;
+    }
 
     @PostMapping("users/{userId}/store/{storeId}/products/{productId}/addView")
     @Operation(summary = "Ajouter une nouvelle vue à un produit")

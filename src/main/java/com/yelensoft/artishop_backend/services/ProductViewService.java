@@ -19,10 +19,13 @@ import java.util.Optional;
 
 @Service
 public class ProductViewService {
-    @Autowired
-    private ProductViewRepository productViewRepository;
-    @Autowired
-    private ProductRepository productRepository;
+    final private ProductViewRepository productViewRepository;
+    final private ProductRepository productRepository;
+
+    public ProductViewService(ProductViewRepository productViewRepository, ProductRepository productRepository) {
+        this.productViewRepository = productViewRepository;
+        this.productRepository = productRepository;
+    }
 
     public ResponseEntity<ProductView> addProductView(Long userId, Long storeId, Long productId,
                                                       ProductView productView) {
@@ -67,6 +70,8 @@ public class ProductViewService {
                 productViewUpdate.setColor((String) updateDataMap.getOrDefault("color",
                         productViewUpdate.getColor()));
                 productViewUpdate.setUpdateDate(LocalDateTime.now());
+
+                return ResponseEntity.ok(productViewRepository.save(productViewUpdate));
             }
             throw new NotFoundException("Vous n'ête pas autorisé à modifier cette vue ou bien la vue n'existe pas");
         }catch (Exception e){

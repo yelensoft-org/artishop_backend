@@ -1,12 +1,13 @@
 package com.yelensoft.artishop_backend.services;
 
+import com.yelensoft.artishop_backend.dto.AddProductDto;
 import com.yelensoft.artishop_backend.exceptions.BadRequestException;
 import com.yelensoft.artishop_backend.exceptions.NotFoundException;
 import com.yelensoft.artishop_backend.model.Product;
 import com.yelensoft.artishop_backend.model.Store;
+import com.yelensoft.artishop_backend.repositories.CategoryRepository;
 import com.yelensoft.artishop_backend.repositories.ProductRepository;
 import com.yelensoft.artishop_backend.repositories.StoreRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,10 +20,15 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private StoreRepository storeRepository;
+    private final ProductRepository productRepository;
+    private final StoreRepository storeRepository;
+    private final CategoryRepository categoryRepository;
+
+    public ProductService(ProductRepository productRepository, StoreRepository storeRepository, CategoryRepository categoryRepository) {
+        this.productRepository = productRepository;
+        this.storeRepository = storeRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
     public ResponseEntity<Product> getProductById(Long productId) {
         try {
@@ -36,10 +42,12 @@ public class ProductService {
         }
     }
 
-    public ResponseEntity<Product> addProduct(Long userId, Long storeId, Product product){
+    public ResponseEntity<Product> addProduct(Long userId, Long storeId, AddProductDto request){
         try {
             Optional<Store> optionalStore = storeRepository.findByIdAndUserId(storeId, userId);
             if (optionalStore.isPresent()) {
+                Product product = request.getProduct();
+                product.setCategories(categoryRepository.findAllById(request.getIdsCategories()));
                 product.setStore(optionalStore.get());
                 product.setAvailable(true);
                 product.setDeleted(false);
@@ -76,6 +84,8 @@ public class ProductService {
                 productUpdate.setAvailable((boolean) updateDataMap.getOrDefault("available", productUpdate.isAvailable()));
                 productUpdate.setGlobalSize((String) updateDataMap.getOrDefault("globalSize", productUpdate.getGlobalSize()));
                 productUpdate.setUpdateDate(LocalDateTime.now());
+
+                return ResponseEntity.ok(productRepository.save(productUpdate));
             }
             throw new NotFoundException("Vous n'ête pas autorisé à modifier ce produit ou bien le produit n'existe pas dans la base de données");
         }catch (Exception e){
