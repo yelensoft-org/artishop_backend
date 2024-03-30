@@ -1,5 +1,7 @@
 package com.yelensoft.artishop_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -38,5 +40,6 @@ public class ProductView {
     private LocalDateTime updateDate;
 
     @ManyToOne
+    @JsonIgnore
     private Product product;
 }

@@ -32,7 +32,7 @@ public class ProductService {
 
     public ResponseEntity<Product> getProductById(Long productId) {
         try {
-            Optional<Product> optionalProduct = productRepository.findById(productId);
+            Optional<Product> optionalProduct = productRepository.findByIdAndDeletedFalse(productId);
             if(optionalProduct.isPresent()) {
                 return ResponseEntity.ok(optionalProduct.get());
             }
@@ -62,7 +62,7 @@ public class ProductService {
                 return ResponseEntity.created(location).body(productSaved);
 
             }
-            throw new NotFoundException("Vous n'ête pas autoriser à effectuer une tel action");
+            throw new NotFoundException("Vous n'ête pas autoriser à effectuer une telle action");
         }catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -71,7 +71,7 @@ public class ProductService {
 
     public ResponseEntity<Product> updateProduct(Long userId, Long storeId, Long productId, Map<String, Object> updateDataMap) {
         try {
-            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreUserId(productId, storeId, userId);
+            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreUserIdAndDeletedFalse(productId, storeId, userId);
             if(productOptional.isPresent()){
                 Product productUpdate = productOptional.get();
 
@@ -96,7 +96,7 @@ public class ProductService {
     public ResponseEntity<Boolean> deleteProduct(Long userId, Long storeId, Long productId) {
         try {
             Optional<Product> productOptional = productRepository
-                    .findByIdAndStoreIdAndStoreUserId(productId, storeId, userId);
+                    .findByIdAndStoreIdAndStoreUserIdAndDeletedFalse(productId, storeId, userId);
             if (productOptional.isPresent()){
                 Product productUpdate = productOptional.get();
                 productUpdate.setDeleted(true);
@@ -110,12 +110,20 @@ public class ProductService {
     }
 
     public List<Product> getAllProductsByStoreId(Long storeId) {
-        return productRepository.findAllByStoreId(storeId);
+        return productRepository.findAllByStoreIdAndDeletedFalse(storeId);
     }
 
     public List<Product> getAllProductsByUser(int fromIndex, int toIndex) {
         try {
-            return productRepository.findAll().subList(fromIndex, toIndex);
+            if ((fromIndex>=0 && toIndex>=0) && (fromIndex<=toIndex)) {
+                try {
+                    Product product = productRepository.findAllByDeletedFalse().get(toIndex);
+                    return productRepository.findAllByDeletedFalse().subList(fromIndex, toIndex);
+                }catch (Exception e) {
+                    return productRepository.findAllByDeletedFalse();
+                }
+            }
+            throw new BadRequestException("L'index de depart ou de fin est incorrecte");
         }catch (Exception e){
             throw new BadRequestException(e.getMessage());
         }

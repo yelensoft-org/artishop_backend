@@ -29,7 +29,6 @@ public class Category {
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "sizeType vide")
     private SizeType sizeType;
 
     private LocalDateTime creationDate = LocalDateTime.now();

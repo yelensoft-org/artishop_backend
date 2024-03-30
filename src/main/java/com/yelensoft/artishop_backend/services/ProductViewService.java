@@ -31,17 +31,23 @@ public class ProductViewService {
                                                       ProductView productView) {
         try {
             Optional<Product> productOptional = productRepository
-                    .findByIdAndStoreIdAndStoreUserId(productId, storeId, userId);
+                    .findByIdAndStoreIdAndStoreUserIdAndDeletedFalse(productId, storeId, userId);
             if(productOptional.isPresent()) {
-                productView.setProduct(productOptional.get());
-                productView.setCreationDate(LocalDateTime.now());
-                productView.setUpdateDate(LocalDateTime.now());
+                Product product = productOptional.get();
+                int sum = product.getProductViews().stream().map(ProductView::getNbAvailable)
+                        .reduce(0, Integer::sum);
+                if (product.getStockQuantity()>=(sum+productView.getNbAvailable())) {
+                    productView.setProduct(product);
+                    productView.setCreationDate(LocalDateTime.now());
+                    productView.setUpdateDate(LocalDateTime.now());
 
-                ProductView productViewSaved = productViewRepository.save(productView);
-                URI location = ServletUriComponentsBuilder.
-                        fromCurrentContextPath().path("{id}").
-                        buildAndExpand(productViewSaved.getId()).toUri();
-                return ResponseEntity.created(location).body(productViewSaved);
+                    ProductView productViewSaved = productViewRepository.save(productView);
+                    URI location = ServletUriComponentsBuilder.
+                            fromCurrentContextPath().path("{id}").
+                            buildAndExpand(productViewSaved.getId()).toUri();
+                    return ResponseEntity.created(location).body(productViewSaved);
+                }
+                throw new BadRequestException("Error: 652 - La quantité disponible pour ce produit est atteint");
             }
             throw new NotFoundException("Ce produit n'exite pas");
         }catch (Exception e) {

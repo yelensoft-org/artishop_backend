@@ -29,13 +29,16 @@ public class CategoryService {
     }
 
     public ResponseEntity<Category> addCategory(Category category){
+        category.setCreationDate(LocalDateTime.now());
+        category.setUpdateDate(LocalDateTime.now());
+        category.setDeleted(false);
         return ResponseEntity.ok(categoryRepository.save(category));
     }
 
     public ResponseEntity<String> addCategoryToProduct(Long userId, Long storeId, Long productId,
                                                          Long categoryId) {
         try {
-            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreUserId(
+            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreUserIdAndDeletedFalse(
                     productId, storeId, userId
             );
             if (productOptional.isPresent()) {
@@ -60,7 +63,7 @@ public class CategoryService {
     public ResponseEntity<String> deleteCategoryFromProduct(Long userId, Long storeId, Long productId,
                                                             Long categoryId) {
         try {
-            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreUserId(
+            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreUserIdAndDeletedFalse(
                     productId, storeId, userId
             );
             if (productOptional.isPresent()) {

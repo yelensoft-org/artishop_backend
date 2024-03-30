@@ -47,4 +47,7 @@ public class Product {
 
     @ManyToMany
     private List<Category> categories;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductView> productViews;
 }
