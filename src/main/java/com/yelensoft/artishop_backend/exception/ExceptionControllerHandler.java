@@ -13,6 +13,17 @@ import java.util.Date;
 @ControllerAdvice
 public class ExceptionControllerHandler {
 
+    @ExceptionHandler(NotAuthorizedException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public ErrorMessage handleNotAuthorizedException (NotAuthorizedException ex, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.UNAUTHORIZED.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorMessage handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request){

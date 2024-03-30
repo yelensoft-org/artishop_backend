@@ -1,5 +1,6 @@
 package com.yelensoft.artishop_backend.service;
 
+import com.yelensoft.artishop_backend.exception.NotAuthorizedException;
 import com.yelensoft.artishop_backend.model.Cart;
 import com.yelensoft.artishop_backend.model.Users;
 import com.yelensoft.artishop_backend.pojoClass.AuthPojo;
@@ -42,6 +43,9 @@ public class UsersService {
         Users usersVerif = usersRepository.findByEmail(authPojo.getEmail());
         if (usersVerif == null) throw new EntityNotFoundException("invalid user");
         if (!passwordEncoder.matches(authPojo.getPassword(), usersVerif.getPassword())) throw new EntityNotFoundException("invalid password");
+        if (usersVerif.isDeleted()) throw new NotAuthorizedException("denied");
         return usersVerif;
     }
+
+
 }
