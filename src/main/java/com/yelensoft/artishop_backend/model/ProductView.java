@@ -1,11 +1,9 @@
 package com.yelensoft.artishop_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -23,7 +21,6 @@ public class ProductView {
     @Size(min = 2, message = "champs imageUrl, nombre de caractère incorrecte")
     private String imageUrls;
 
-    @NotNull(message = "nbAvailable null")
     @Min(value = 1, message = "valeur nbAvailable incorrecte")
     private int nbAvailable;
 
