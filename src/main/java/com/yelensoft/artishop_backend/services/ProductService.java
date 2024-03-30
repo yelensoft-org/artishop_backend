@@ -113,17 +113,20 @@ public class ProductService {
         return productRepository.findAllByStoreIdAndDeletedFalse(storeId);
     }
 
-    public List<Product> getAllProductsByUser(int fromIndex, int toIndex) {
+    public List<Product> getAllProductsByUser(int fromIndex, int limit) {
         try {
-            if ((fromIndex>=0 && toIndex>=0) && (fromIndex<=toIndex)) {
+            if (fromIndex>=0 && limit>0) {
                 try {
-                    Product product = productRepository.findAllByDeletedFalse().get(toIndex);
-                    return productRepository.findAllByDeletedFalse().subList(fromIndex, toIndex);
+                    Product product = productRepository.findAllByDeletedFalse().get(fromIndex);
+                    // on s'assure qu'on ne dépasse pas les limites de la liste
+                    int endIndex = Math.min(fromIndex + limit, productRepository.findAllByDeletedFalse().size());
+                    return productRepository.findAllByDeletedFalse().subList(fromIndex, endIndex);
                 }catch (Exception e) {
-                    return productRepository.findAllByDeletedFalse();
+                    int endIndex = Math.min(limit, productRepository.findAllByDeletedFalse().size());
+                    return productRepository.findAllByDeletedFalse().subList(0, endIndex);
                 }
             }
-            throw new BadRequestException("L'index de depart ou de fin est incorrecte");
+            throw new BadRequestException("L'index de depart ou la limit est incorrecte");
         }catch (Exception e){
             throw new BadRequestException(e.getMessage());
         }

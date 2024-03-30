@@ -34,11 +34,11 @@ public class ProductController {
         return productService.getAllProductsByStoreId(storeId);
     }
 
-    @Operation(summary = "Recupère tous les produits")
-    @GetMapping(value = "products", params = {"from", "to"})
+    @Operation(summary = "Recupère une liste de produits")
+    @GetMapping(value = "products", params = {"from", "limit"})
     public List<Product> getAllProductsByUser(@RequestParam("from") int fromIndex,
-                                              @RequestParam("to") int toIndex){
-        return productService.getAllProductsByUser(fromIndex, toIndex);
+                                              @RequestParam("limit") int limit){
+        return productService.getAllProductsByUser(fromIndex, limit);
     }
 
     @GetMapping("products/{productId}")
