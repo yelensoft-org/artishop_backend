@@ -36,15 +36,17 @@ public class CategoryService {
     }
 
     public ResponseEntity<String> addCategoryToProduct(Long userId, Long storeId, Long productId,
-                                                         Long categoryId) {
+                                                       Map<String, List<Long>> categoryIds) {
         try {
             Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreUserIdAndDeletedFalse(
                     productId, storeId, userId
             );
             if (productOptional.isPresent()) {
-                Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
-                if (categoryOptional.isPresent()) {
-                    return addCategoryToProduct(productOptional.get(), categoryOptional.get());
+                Product product = productOptional.get();
+                if (categoryIds.containsKey("categoryIds")) {
+                    List<Long> ids = categoryIds.get("categoryIds");
+                    List<Category> categories = categoryRepository.findAllById(ids);
+                    return addCategoryToProduct(product, categories);
                 }
                 throw new NotFoundException("Cette catégorie n'existe pas");
             }
@@ -54,8 +56,8 @@ public class CategoryService {
         }
     }
 
-    private ResponseEntity<String> addCategoryToProduct(Product product, Category category) {
-        product.getCategories().add(category);
+    private ResponseEntity<String> addCategoryToProduct(Product product, List<Category> categories) {
+        product.setCategories(categories);
         productRepository.save(product);
         return ResponseEntity.ok("Ajout reussie");
     }

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,6 +24,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
+    public static int MAX_LIMIT = 20;
 
     public ProductService(ProductRepository productRepository, StoreRepository storeRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
@@ -120,10 +122,12 @@ public class ProductService {
                     Product product = productRepository.findAllByDeletedFalse().get(fromIndex);
                     // on s'assure qu'on ne dépasse pas les limites de la liste
                     int endIndex = Math.min(fromIndex + limit, productRepository.findAllByDeletedFalse().size());
+
                     return productRepository.findAllByDeletedFalse().subList(fromIndex, endIndex);
                 }catch (Exception e) {
-                    int endIndex = Math.min(limit, productRepository.findAllByDeletedFalse().size());
-                    return productRepository.findAllByDeletedFalse().subList(0, endIndex);
+                    /*int endIndex = Math.min(limit, productRepository.findAllByDeletedFalse().size());
+                    return productRepository.findAllByDeletedFalse().subList(0, endIndex);*/
+                    return new ArrayList<>();
                 }
             }
             throw new BadRequestException("L'index de depart ou la limit est incorrecte");

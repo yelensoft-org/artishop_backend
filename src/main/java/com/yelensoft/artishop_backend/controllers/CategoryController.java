@@ -25,12 +25,18 @@ public class CategoryController {
         return categoryService.addCategory(category);
     }
 
-    @PostMapping("users/{userId}/stores/{storeId}/products/{productId}/categories/{categoryId}/add")
-    @Operation(summary = "Ajout d'une nouvelle catégorie à un produit")
+    @PostMapping("users/{userId}/stores/{storeId}/products/{productId}/categories/add")
+    @Operation(summary = "Ajout d'une liste de catégorie à un produit")
     public ResponseEntity<String> addCategoryToProduct(@PathVariable Long userId, @PathVariable Long storeId,
                                                          @PathVariable Long productId,
-                                                         @PathVariable Long categoryId){
-        return categoryService.addCategoryToProduct(userId, storeId, productId, categoryId);
+                                                         @RequestBody Map<String, List<Long>> categoryIds){
+        /*
+            L'objet map doit être de la forme:
+            {
+                "categoryIds" : [1,2,...]
+            }
+        */
+        return categoryService.addCategoryToProduct(userId, storeId, productId, categoryIds);
     }
 
     @DeleteMapping("users/{userId}/stores/{storeId}/products/{productId}/categories/{categoryId}/delete")
