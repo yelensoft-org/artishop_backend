@@ -46,7 +46,7 @@ public class Store {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    private double nbreVote =0.0;
+    private double nbreVote = 0.0;
 
     private double totalValueVote = 0.0;
 
