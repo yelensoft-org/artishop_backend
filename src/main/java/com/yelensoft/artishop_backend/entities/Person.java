@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
 import com.yelensoft.artishop_backend.enumClass.PersonGender;
 import com.yelensoft.artishop_backend.enumClass.PersonRole;
@@ -16,7 +16,7 @@ public abstract class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected long id;
+    protected Long id;
 
     @NotBlank
     @Size(min = 2, max = 60, message = "invalid number of characters")

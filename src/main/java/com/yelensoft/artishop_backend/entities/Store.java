@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
 import com.yelensoft.artishop_backend.enumClass.StoreStatus;
 import jakarta.persistence.*;
@@ -52,7 +52,7 @@ public class Store {
     private double nbreStar = 0.0;
 
     @OneToOne
-    private Users users;
+    private UserApp userApp;
 
     @OneToOne
     private Address address;

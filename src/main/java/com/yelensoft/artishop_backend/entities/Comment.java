@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -23,7 +23,7 @@ public class Comment {
     private boolean deleted = false;
 
     @ManyToOne
-    private Users users;
+    private UserApp userApp;
 
     @ManyToOne
     private Store store;

@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.exception;
+package com.yelensoft.artishop_backend.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

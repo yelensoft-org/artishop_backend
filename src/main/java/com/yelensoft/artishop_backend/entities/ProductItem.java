@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -24,7 +24,7 @@ public class ProductItem {
     private LocalDateTime updateDate;
 
     @ManyToOne
-    private ProductConfig productConfig;
+    private ProductView productConfig;
 
     @ManyToOne
     private Order order;

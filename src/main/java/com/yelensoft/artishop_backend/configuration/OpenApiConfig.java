@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Bean;
 
 public class OpenApiConfig {
     @Bean
-    public OpenAPI artShopOpenAPI() {
+    public OpenAPI artEShopOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("Art Shop")
-                        .description("API pour artshop")
+                .info(new Info().title("Art EShop")
+                        .description("API pour arteshop")
                         .version("1.0"));
     }
 }
