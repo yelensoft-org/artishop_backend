@@ -27,5 +27,5 @@ public class ProductItem {
     private ProductView productView;
 
     @ManyToOne
-    private ProductOrder productOrder;
+    private Order order;
 }

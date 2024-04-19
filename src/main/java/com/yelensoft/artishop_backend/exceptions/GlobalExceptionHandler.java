@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleBadRequestException(WebRequest webRequest, BadRequestException ex) {
         ErrorMessage errorResponse = new ErrorMessage();
         errorResponse.setTimestamp(String.valueOf(System.currentTimeMillis()));
-        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
         errorResponse.setError(HttpStatus.BAD_REQUEST.getReasonPhrase());
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setPath( webRequest.getDescription(false));
@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleNotFoundException(WebRequest webRequest, NotFoundException ex) {
         ErrorMessage errorResponse = new ErrorMessage();
         errorResponse.setTimestamp(String.valueOf(System.currentTimeMillis()));
-        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        errorResponse.setStatusCode(HttpStatus.NOT_FOUND.value());
         errorResponse.setError(HttpStatus.NOT_FOUND.getReasonPhrase());
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setPath( webRequest.getDescription(false));
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleResourceExistException(WebRequest webRequest, ResourceExistException ex) {
         ErrorMessage errorResponse = new ErrorMessage();
         errorResponse.setTimestamp(String.valueOf(System.currentTimeMillis()));
-        errorResponse.setStatus(HttpStatus.CONFLICT.value());
+        errorResponse.setStatusCode(HttpStatus.CONFLICT.value());
         errorResponse.setError(HttpStatus.CONFLICT.getReasonPhrase());
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setPath( webRequest.getDescription(false));
@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleInternalServerException(WebRequest webRequest, InternalServerException ex) {
         ErrorMessage errorResponse = new ErrorMessage();
         errorResponse.setTimestamp(String.valueOf(System.currentTimeMillis()));
-        errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorResponse.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorResponse.setError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setPath( webRequest.getDescription(false));
