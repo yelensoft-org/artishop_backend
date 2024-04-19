@@ -19,6 +19,7 @@ public class ExceptionControllerHandler {
         return new ErrorMessage(
                 HttpStatus.UNAUTHORIZED.value(),
                 new Date(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
                 ex.getMessage(),
                 request.getDescription(false)
         );
@@ -34,6 +35,7 @@ public class ExceptionControllerHandler {
         return new ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 new Date(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 messageError[0],
                 request.getDescription(false)
         );
@@ -45,6 +47,7 @@ public class ExceptionControllerHandler {
         return new ErrorMessage(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 new Date(),
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 ex.getMessage(),
                 request.getDescription(false)
         );
