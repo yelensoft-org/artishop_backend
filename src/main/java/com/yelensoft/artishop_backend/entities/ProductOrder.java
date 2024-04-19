@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
 import com.yelensoft.artishop_backend.enumClass.StoreStatus;
 import jakarta.persistence.*;
@@ -37,7 +37,7 @@ public class ProductOrder {
     private boolean deleted = false;
 
     @ManyToOne
-    private User user;
+    private UserApp userApp;
 
     @ManyToOne
     private Address address;

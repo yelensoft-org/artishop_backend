@@ -1,11 +1,10 @@
 package com.yelensoft.artishop_backend.controllers;
 
 import com.yelensoft.artishop_backend.dto.AddProductDto;
-import com.yelensoft.artishop_backend.model.Product;
+import com.yelensoft.artishop_backend.entities.Product;
 import com.yelensoft.artishop_backend.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

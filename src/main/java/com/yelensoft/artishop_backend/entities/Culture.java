@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

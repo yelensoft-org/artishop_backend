@@ -1,6 +1,6 @@
 package com.yelensoft.artishop_backend.dto;
 
-import com.yelensoft.artishop_backend.model.Product;
+import com.yelensoft.artishop_backend.entities.Product;
 import lombok.Data;
 import java.util.List;
 

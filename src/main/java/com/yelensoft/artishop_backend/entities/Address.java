@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

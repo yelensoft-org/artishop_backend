@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class User extends Person{
+public class UserApp extends Person{
 
     @OneToOne
     private Cart cart;

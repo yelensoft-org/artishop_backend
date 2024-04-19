@@ -1,7 +1,9 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
-import com.yelensoft.artishop_backend.enumClass.SizeType;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -10,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class Category {
+public class PaymentMethod {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,24 +22,13 @@ public class Category {
     @Size(min = 2, max = 30, message = "invalid number of characters")
     private String name;
 
-    @Lob
-    @NotBlank(message = "description vide")
-    private String description;
-
     @NotBlank(message = "champs imageUrl vide")
     @Size(min = 2, message = "champs imageUrl, nombre de caractère incorrecte")
     private String imageUrl;
-
-    @Enumerated(EnumType.STRING)
-    private SizeType sizeType;
 
     private LocalDateTime creationDate = LocalDateTime.now();
 
     private LocalDateTime updateDate;
 
     private boolean deleted = false;
-
-
-
-
 }

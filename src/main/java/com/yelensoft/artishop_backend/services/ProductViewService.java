@@ -2,11 +2,10 @@ package com.yelensoft.artishop_backend.services;
 
 import com.yelensoft.artishop_backend.exceptions.BadRequestException;
 import com.yelensoft.artishop_backend.exceptions.NotFoundException;
-import com.yelensoft.artishop_backend.model.Product;
-import com.yelensoft.artishop_backend.model.ProductView;
+import com.yelensoft.artishop_backend.entities.Product;
+import com.yelensoft.artishop_backend.entities.ProductView;
 import com.yelensoft.artishop_backend.repositories.ProductRepository;
 import com.yelensoft.artishop_backend.repositories.ProductViewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

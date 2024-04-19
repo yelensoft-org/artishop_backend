@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
 import com.yelensoft.artishop_backend.enumClass.NotificationType;
 import jakarta.persistence.*;
@@ -29,5 +29,5 @@ public class Notification {
     private boolean deleted = false;
 
     @ManyToOne
-    private User user;
+    private UserApp userApp;
 }

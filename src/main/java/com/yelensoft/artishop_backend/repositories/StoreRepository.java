@@ -1,6 +1,6 @@
 package com.yelensoft.artishop_backend.repositories;
 
-import com.yelensoft.artishop_backend.model.Store;
+import com.yelensoft.artishop_backend.entities.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package com.yelensoft.artishop_backend.controllers;
 
-import com.yelensoft.artishop_backend.model.Category;
+import com.yelensoft.artishop_backend.entities.Category;
 import com.yelensoft.artishop_backend.services.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
