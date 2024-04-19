@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 public class ArtishopBackendApplication {
 
     public static void main(String[] args) {
+
+//        System.setProperty( "spring.devtools.restart.enabled" , "false" );
         SpringApplication.run(ArtishopBackendApplication.class, args);
     }
 

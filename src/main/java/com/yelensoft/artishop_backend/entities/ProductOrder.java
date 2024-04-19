@@ -12,14 +12,13 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class Order {
+public class ProductOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "status vide")
     private OrderStatus status;
 
     @NotNull(message = "nbProductItem null")

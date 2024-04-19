@@ -24,8 +24,8 @@ public class ProductItem {
     private LocalDateTime updateDate;
 
     @ManyToOne
-    private ProductView productConfig;
+    private ProductView productView;
 
     @ManyToOne
-    private Order order;
+    private ProductOrder productOrder;
 }
