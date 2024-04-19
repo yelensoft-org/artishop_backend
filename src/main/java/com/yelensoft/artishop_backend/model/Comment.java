@@ -23,7 +23,7 @@ public class Comment {
     private boolean deleted = false;
 
     @ManyToOne
-    private Users users;
+    private User user;
 
     @ManyToOne
     private Store store;

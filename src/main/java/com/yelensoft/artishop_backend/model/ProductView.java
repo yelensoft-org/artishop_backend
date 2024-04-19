@@ -1,9 +1,9 @@
 package com.yelensoft.artishop_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class ProductConfig {
+public class ProductView {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,9 +19,8 @@ public class ProductConfig {
 
     @NotBlank(message = "champs imageUrl vide")
     @Size(min = 2, message = "champs imageUrl, nombre de caractère incorrecte")
-    private String imageUrl;
+    private String imageUrls;
 
-    @NotNull(message = "nbAvailable null")
     @Min(value = 1, message = "valeur nbAvailable incorrecte")
     private int nbAvailable;
 
@@ -38,5 +37,6 @@ public class ProductConfig {
     private LocalDateTime updateDate;
 
     @ManyToOne
+    @JsonIgnore
     private Product product;
 }
