@@ -1,9 +1,10 @@
-package com.yelensoft.artishop_backend.controller;
+package com.yelensoft.artishop_backend.controllers;
 
+import com.yelensoft.artishop_backend.services.UsersService;
 import com.yelensoft.artishop_backend.configuration.ResponseHandler;
-import com.yelensoft.artishop_backend.model.Users;
+import com.yelensoft.artishop_backend.model.User;
 import com.yelensoft.artishop_backend.pojoClass.AuthPojo;
-import com.yelensoft.artishop_backend.service.UsersService;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class UsersController {
     private UsersService usersService;
 
     @PostMapping("/add")
-    public ResponseEntity<Object> addUsers(@Valid @RequestBody Users users){
+    public ResponseEntity<Object> addUsers(@Valid @RequestBody User users){
         return ResponseHandler.generateResponse("susses", HttpStatus.OK,usersService.addUsers(users));
     }
 

@@ -27,8 +27,8 @@ public class ProductOrder {
     private int nbProductItem;
 
     @NotNull(message = "totalAmount null")
-    @DecimalMin(value = "0.1", message = "totalAmount, valeur incorrecte")
-    private double totalAmount;
+    @DecimalMin(value = "0.0", message = "totalAmount, valeur incorrecte")
+    private double totalAmount = 0.0;
 
     private LocalDateTime creationDate = LocalDateTime.now();
 

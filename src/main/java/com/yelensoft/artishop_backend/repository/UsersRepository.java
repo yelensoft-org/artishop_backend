@@ -1,11 +1,11 @@
-package com.yelensoft.artishop_backend.repository;
+package com.yelensoft.artishop_backend.Repository;
 
-import com.yelensoft.artishop_backend.model.Users;
+import com.yelensoft.artishop_backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsersRepository extends JpaRepository<Users,Long> {
+public interface UsersRepository extends JpaRepository<User,Long> {
 
-    Users findByEmail(String email);
+    User findByEmail(String email);
 }

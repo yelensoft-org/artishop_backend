@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.repository;
+package com.yelensoft.artishop_backend.Repository;
 
 import com.yelensoft.artishop_backend.model.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
