@@ -22,7 +22,7 @@ public class ProductItemController {
     private ProductItemServive productItemService;
 
      // Endpoint pour passer une commande
-     @PostMapping("/productItems/órder")
+     @PostMapping("/productItems/order")
      public String order(@RequestParam int nbExemplaire,
                                          @RequestParam Long id_productView,
                                          @RequestParam Long id_user,

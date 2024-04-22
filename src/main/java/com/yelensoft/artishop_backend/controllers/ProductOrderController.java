@@ -18,23 +18,23 @@ public class ProductOrderController {
         this.productOrderService = productOrderService;
     }
 
-    @PostMapping("/product-orders/add")
+    @PostMapping("/productorders/add")
     public ResponseEntity<ProductOrder> createProductOrder(@RequestBody ProductOrder productOrder) {
         return productOrderService.AddProductOrder(productOrder.getNbProductItem(), productOrder.getTotalAmount(),
                 productOrder.getUser().getId(), productOrder.getAddress(), productOrder.getPaymentMethod());
     }
 
-    @GetMapping("/product-orders/{id}/{id_user}")
+    @GetMapping("/productorders/{id}/{id_user}")
     public ResponseEntity<ProductOrder> readProductOrder(@PathVariable Long id,@PathVariable Long id_user) {
         return productOrderService.readProductOrder(id,id_user);
     }
 
-    @PutMapping("/product-orders/{id}/{id_user}")
+    @PutMapping("/productorders/{id}/{id_user}")
     public ResponseEntity<ProductOrder> updateProductOrder(@PathVariable Long id,@PathVariable Long id_user, @RequestBody ProductOrder updatedOrder) {
         return productOrderService.updateProductOrder(id, id_user,updatedOrder);
     }
 
-    @DeleteMapping("/product-orders/{id}/{id_user}")
+    @DeleteMapping("/productorders/{id}/{id_user}")
     public ResponseEntity<String> deleteProductOrder(@PathVariable Long id,@PathVariable Long id_user) {
         return productOrderService.deleteProductOrder(id,id_user);
     }
