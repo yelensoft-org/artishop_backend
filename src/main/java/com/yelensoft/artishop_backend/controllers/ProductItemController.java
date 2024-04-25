@@ -22,56 +22,57 @@ public class ProductItemController {
     private ProductItemServive productItemService;
 
      // Endpoint pour passer une commande
-     @PostMapping("/productItems/order")
-     public String order(@RequestParam int nbExemplaire,
-                                         @RequestParam Long id_productView,
-                                         @RequestParam Long id_user,
-                                         @RequestParam PaymentMethod paymentMethod,
-                                         @RequestBody Address address) {
-         return productItemService.ordering(nbExemplaire, id_productView, id_user, paymentMethod, address);
-     }
+     @PostMapping("/productItems")
+     @Operation(summary = "Pour commander directement un Produit Item")
+     public ResponseEntity<ProductOrder> order(@RequestParam int nbExemplaire,
+                                               @RequestParam Long id_productView,
+                                               @RequestParam Long id_user,
+                                               @RequestParam Long id_paymentMethod,
+                                               @RequestParam (required = false) Boolean option,
+                                               @RequestBody Address address) {
+         //l'option c'est pour savoir si l'utilisateur veut etre livre a son domicile
+         if (option){
+             return productItemService.ordering2(nbExemplaire, id_productView, id_user, id_paymentMethod);
+         }else {
+             return productItemService.ordering(nbExemplaire, id_productView, id_user, id_paymentMethod, address);
+         }
+        }
+
+    @GetMapping("/productItems")
+    @Operation(summary = "Afficher un productItem du panier d'un user")
+    public ResponseEntity<ProductItem> readProductItem(@RequestParam Long id,@RequestParam Long id_user) {
+        return productItemService.readProductItem(id,id_user);
+    }
+
+    @DeleteMapping("/productItems")
+    @Operation(summary = "Supprimer un productItem du panier d'un user")
+    public ResponseEntity<String> delProductItem(@RequestParam Long id,@RequestParam Long id_user) {
+        return productItemService.deleteProductItem(id,id_user);
+    }
+
+    @GetMapping("/productItems/readall")
+    @Operation(summary = "Afficher la liste des productItem se trouvant dans le panier")
+    public ResponseEntity<List<ProductItem>> readallProductItem(@RequestParam Long id_user) {
+        return productItemService.listallitem(id_user);
+    }
+
 
     @PostMapping("/productItems/addtocart")
     @Operation(summary = "Ajout d'un nouveau produitItem dans un panier")
 
     public ResponseEntity<ProductItem> addProductItemtocart(@RequestParam int nbExemplaire,
-                                                      @RequestParam Long id_productView,
-                                                      @RequestParam Long id_user) {
+                                                            @RequestParam Long id_productView,
+                                                            @RequestParam Long id_user) {
         return productItemService.addtoCart(id_user,id_productView,nbExemplaire);
     }
 
-    @PostMapping("/productItems/add")
-    @Operation(summary = "Ajout d'un nouveau produitItem")
 
-    public ResponseEntity<ProductItem> addProductItem(@RequestParam int nbExemplaire,
-                                                      @RequestParam Long id_productView,
-                                                      @RequestParam Long id_productOrder) {
-        return productItemService.addProductItem(nbExemplaire, id_productView, id_productOrder);
-    }
-
-    @GetMapping("/productItems/read/{id}")
-    @Operation(summary = "Afficher un productItem")
-    public ResponseEntity<ProductItem> readProductItem(@PathVariable Long id) {
-        return productItemService.readProductItem(id);
-    }
-
-    @GetMapping("/productItems/readall/{id}")
-    @Operation(summary = "Afficher la liste des productItem se trouvant dans le panier")
-    public ResponseEntity<List<ProductItem>> readallProductItem(@PathVariable Long id) {
-        return productItemService.listallitem(id);
-    }
-
-    @PutMapping("/productItems/update/{id}")
+    @PutMapping("/productItems")
     @Operation(summary = "Modifier un product item")
-    public ResponseEntity<ProductItem> updateProductItem(@PathVariable long id,
-                                                         @RequestBody ProductItem updatedProductItem) {
-        return productItemService.updateProductItem(id, updatedProductItem);
-    }
-
-    @DeleteMapping("/productItems/del/{id}")
-    @Operation(summary = "Supprimer un ProductItem")
-    public ResponseEntity<String> deleteProductItem(@PathVariable Long id) {
-        return productItemService.deleteProductItem(id);
+    public ResponseEntity<ProductItem> updateProductItem(@RequestParam Long id,
+                                                         @RequestParam Long id_user,
+                                                         @RequestParam int nbexemplaire) {
+        return productItemService.updateProductItem(id,id_user ,nbexemplaire);
     }
 
 }

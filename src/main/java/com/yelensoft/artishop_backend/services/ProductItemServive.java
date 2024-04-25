@@ -4,15 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.yelensoft.artishop_backend.Repository.ProductItemRepository;
+import com.yelensoft.artishop_backend.Repository.*;
 import com.yelensoft.artishop_backend.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.yelensoft.artishop_backend.Repository.ProductOrderRepository;
-import com.yelensoft.artishop_backend.Repository.UsersRepository;
 import com.yelensoft.artishop_backend.enumClass.OrderStatus;
-import com.yelensoft.artishop_backend.Repository.ProductViewRepository;
 
 @Service
 public class ProductItemServive {
@@ -20,12 +17,14 @@ public class ProductItemServive {
     private final ProductOrderRepository productOrderRepository;
     private final ProductViewRepository productViewRepository;
     private final UsersRepository usersRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
 
-    ProductItemServive(ProductItemRepository ItemRepository, UsersRepository uRepository, ProductViewRepository ViewRepository, ProductOrderRepository OrderRepository) {
+    ProductItemServive(ProductItemRepository ItemRepository,PaymentMethodRepository pRepository ,UsersRepository uRepository, ProductViewRepository ViewRepository, ProductOrderRepository OrderRepository) {
         this.productItemRepository = ItemRepository;
         this.productViewRepository = ViewRepository;
         this.productOrderRepository = OrderRepository;
         this.usersRepository = uRepository;
+        this.paymentMethodRepository = pRepository;
     }
 
     public ResponseEntity<ProductItem> addProductItem(int nbExemplaire, Long id_productView, Long id_productOrder) {
@@ -43,20 +42,27 @@ public class ProductItemServive {
         return ResponseEntity.ok(productItemRepository.save(productItem));
     }
 
-    public ResponseEntity<ProductItem> readProductItem(Long id) {
+    public ResponseEntity<ProductItem> readProductItem(Long id,Long id_user) {
+        Optional<User> user =   usersRepository.findById(id_user);
+        Optional<ProductItem> productItem = productItemRepository.findById(id);
+        if (user.isPresent() && productItem.isPresent() && user.get().getCart().getId() == productItem.get().getCart().getId()){
+            return ResponseEntity.ok(productItemRepository.findById(id).get());
+        }else {
+            return  ResponseEntity.notFound().build();
+        }
 
-        return ResponseEntity.ok(productItemRepository.findById(id).get());
+
+
+
     }
 
-    public ResponseEntity<ProductItem> updateProductItem(long Id, ProductItem updatedProductItem) {
+    public ResponseEntity<ProductItem> updateProductItem(Long Id, Long id_user, int Nbexemplaire) {
+        Optional<User> user =   usersRepository.findById(id_user);
         Optional<ProductItem> optionalProductItem = productItemRepository.findById(Id);
-
-        if (optionalProductItem.isPresent()) {
+        if (user.isPresent() && optionalProductItem.isPresent() && user.get().getCart().getId() == optionalProductItem.get().getCart().getId()){
             ProductItem existingProductItem = optionalProductItem.get();
 
-            existingProductItem.setNbExemplaire(updatedProductItem.getNbExemplaire());
-            existingProductItem.setProductView(updatedProductItem.getProductView());
-            existingProductItem.setProductOrder(updatedProductItem.getProductOrder());
+            existingProductItem.setNbExemplaire(Nbexemplaire) ;
             existingProductItem.setUpdateDate(LocalDateTime.now());
 
             ProductItem savedProductItem = productItemRepository.save(existingProductItem);
@@ -66,46 +72,63 @@ public class ProductItemServive {
         }
     }
 
-    public ResponseEntity<String> deleteProductItem(Long id) {
+    public ResponseEntity<String> deleteProductItem(Long id,Long id_user) {
+        Optional<User> user =   usersRepository.findById(id_user);
         Optional<ProductItem> productItem = productItemRepository.findById(id);
-        if (productItem.isPresent()) {
-            // pas totalement fini
+        if (user.isPresent() && productItem.isPresent() && user.get().getCart().getId() == productItem.get().getCart().getId()){
             productItemRepository.deleteById(id);
-        } else {
-            return ResponseEntity.ok("Not found");
+            return ResponseEntity.ok("Done");
+        }else {
+            return  ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok("Done");
     }
 
     public ResponseEntity<List<ProductItem>> listallitem(Long id_user) {
         Optional<User> user = usersRepository.findById(id_user);
-        if (!user.isPresent()) {
+        if (!user.isPresent() && user.get().getCart()==null) {
             return ResponseEntity.ok(null);
         }
         return ResponseEntity.ok(productItemRepository.findByCart_Id(user.get().getCart().getId()));
     }
 
-    public String ordering(int nbExemplaire, Long id_productView, Long id_user, PaymentMethod paymentMethod, Address address) {
+    public ResponseEntity<ProductOrder> ordering(int nbExemplaire, Long id_productView, Long id_user, Long id_paymentMethod, Address address) {
         ProductOrder productOrder = new ProductOrder();
 
         Optional<User> user = usersRepository.findById(id_user);
         Optional<ProductView> productView = productViewRepository.findById(id_productView);
-        if (user.isPresent() && productView.isPresent()) {
-
-            productOrder.setStatus(OrderStatus.IN_PROGRESS);
-            productOrder.setNbProductItem(nbExemplaire);
-            productOrder.setTotalAmount(productView.get().getProduct().getPrice() * nbExemplaire);
+        Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(id_paymentMethod);
+        if (user.isPresent() && productView.isPresent() && nbExemplaire >=1 && paymentMethod.isPresent()) {
             productOrder.setUser(user.get());
+            productOrder.setTotalAmount(productView.get().getProduct().getPrice() * nbExemplaire);
+            productOrder.setNbProductItem(nbExemplaire);
+            productOrder.setStatus(OrderStatus.IN_PROGRESS);
             productOrder.setAddress(address);
-            productOrder.setPaymentMethod(paymentMethod);
-
+            productOrder.setPaymentMethod(paymentMethod.get());
             addProductItem(nbExemplaire, id_productView, productOrderRepository.save(productOrder).getId()).ok();
+            return ResponseEntity.ok(productOrder);
+        }else {
+                        return ResponseEntity.badRequest().build();
+                    }
 
-        } else {
-            ResponseEntity.notFound().build();
+    }
+    public ResponseEntity<ProductOrder> ordering2(int nbExemplaire, Long id_productView, Long id_user, Long id_paymentMethod) {
+        ProductOrder productOrder = new ProductOrder();
+
+        Optional<User> user = usersRepository.findById(id_user);
+        Optional<ProductView> productView = productViewRepository.findById(id_productView);
+        Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(id_paymentMethod);
+        if (user.isPresent() && productView.isPresent() && nbExemplaire >=1 && paymentMethod.isPresent()) {
+            productOrder.setUser(user.get());
+            productOrder.setTotalAmount(productView.get().getProduct().getPrice() * nbExemplaire);
+            productOrder.setNbProductItem(nbExemplaire);
+            productOrder.setStatus(OrderStatus.IN_PROGRESS);
+            productOrder.setAddress(user.get().getAddress());
+            productOrder.setPaymentMethod(paymentMethod.get());
+            addProductItem(nbExemplaire, id_productView, productOrderRepository.save(productOrder).getId()).ok();
+            return ResponseEntity.ok(productOrder);
+        }else {
+            return ResponseEntity.badRequest().build();
         }
-
-        return "En cours";
 
     }
 
@@ -113,7 +136,7 @@ public class ProductItemServive {
         ProductItem productItem = new ProductItem();
         Optional<ProductView> productView = productViewRepository.findById(id_productView);
         Optional<User> user = usersRepository.findById(id_user);
-        if (productView.isPresent() && nbExemplaire >= 1 && user.isPresent()) {
+        if (productView.isPresent() && nbExemplaire >= 1 && user.isPresent() && user.get().getCart()!=null) {
             productItem.setProductView(productView.get());
             productItem.setCart(user.get().getCart());
             productItem.setNbExemplaire(nbExemplaire);
