@@ -1,12 +1,11 @@
 package com.yelensoft.artishop_backend.services;
 
-import com.yelensoft.artishop_backend.Repository.CartRepository;
-import com.yelensoft.artishop_backend.Repository.UsersRepository;
+import com.yelensoft.artishop_backend.repository.CartRepository;
+import com.yelensoft.artishop_backend.repository.UsersRepository;
 import com.yelensoft.artishop_backend.exception.NotAuthorizedException;
 import com.yelensoft.artishop_backend.model.Cart;
 import com.yelensoft.artishop_backend.model.User;
 import com.yelensoft.artishop_backend.pojoClass.AuthPojo;
-import com.yelensoft.artishop_backend.services.AddressService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

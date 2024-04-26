@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.Repository;
+package com.yelensoft.artishop_backend.repository;
 
 import com.yelensoft.artishop_backend.model.ProductItem;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ProductItemRepository extends JpaRepository<ProductItem,Long> {
+
+  List<ProductItem> findByProductOrderId(Long id);
 
   List<ProductItem> findByCart_Id(Long id);
 

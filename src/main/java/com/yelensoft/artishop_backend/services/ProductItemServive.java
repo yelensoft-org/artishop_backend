@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.yelensoft.artishop_backend.Repository.*;
+import com.yelensoft.artishop_backend.repository.*;
 import com.yelensoft.artishop_backend.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,13 +18,15 @@ public class ProductItemServive {
     private final ProductViewRepository productViewRepository;
     private final UsersRepository usersRepository;
     private final PaymentMethodRepository paymentMethodRepository;
+    private final CartRepository cartRepository;
 
-    ProductItemServive(ProductItemRepository ItemRepository,PaymentMethodRepository pRepository ,UsersRepository uRepository, ProductViewRepository ViewRepository, ProductOrderRepository OrderRepository) {
+    ProductItemServive(ProductItemRepository ItemRepository,CartRepository cRepository,PaymentMethodRepository pRepository ,UsersRepository uRepository, ProductViewRepository ViewRepository, ProductOrderRepository OrderRepository) {
         this.productItemRepository = ItemRepository;
         this.productViewRepository = ViewRepository;
         this.productOrderRepository = OrderRepository;
         this.usersRepository = uRepository;
         this.paymentMethodRepository = pRepository;
+        this.cartRepository = cRepository;
     }
 
     public ResponseEntity<ProductItem> addProductItem(int nbExemplaire, Long id_productView, Long id_productOrder) {
@@ -137,9 +139,18 @@ public class ProductItemServive {
         Optional<ProductView> productView = productViewRepository.findById(id_productView);
         Optional<User> user = usersRepository.findById(id_user);
         if (productView.isPresent() && nbExemplaire >= 1 && user.isPresent() && user.get().getCart()!=null) {
+            for (ProductItem item :  user.get().getCart().getProductItems() ) {
+                //ici si lítem a ajoute existe deja on modifie juste le nmbre exemplaire pour pas avoir des doublons dans notre panier
+                if (item.getProductView().getId() == id_productView){
+
+                    return updateProductItem(item.getId(),id_user,nbExemplaire+item.getNbExemplaire());
+                }
+            }
+
+            productItem.setNbExemplaire(nbExemplaire);
             productItem.setProductView(productView.get());
             productItem.setCart(user.get().getCart());
-            productItem.setNbExemplaire(nbExemplaire);
+
 
         } else {
             return ResponseEntity.notFound().build();

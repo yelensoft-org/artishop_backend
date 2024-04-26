@@ -1,15 +1,14 @@
 package com.yelensoft.artishop_backend.services;
 
-import com.yelensoft.artishop_backend.Repository.ProductItemRepository;
-import com.yelensoft.artishop_backend.Repository.ProductOrderRepository;
+import com.yelensoft.artishop_backend.repository.*;
 import com.yelensoft.artishop_backend.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.yelensoft.artishop_backend.Repository.UsersRepository;
 import com.yelensoft.artishop_backend.enumClass.OrderStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,25 +16,57 @@ public class ProductOrderService {
      final private UsersRepository usersRepository;
     final private ProductOrderRepository productOrderRepository;
     final private ProductItemRepository productItemRepository;
+    final private CartRepository cartRepository;
+    final private PaymentMethodRepository paymentMethodRepository;
 
-    public ProductOrderService(UsersRepository uRepository,ProductItemRepository IRepository,ProductOrderRepository pRepository){
+    public ProductOrderService(UsersRepository uRepository,PaymentMethodRepository pMethod ,CartRepository cRepository,ProductItemRepository IRepository,ProductOrderRepository pRepository){
         this.usersRepository = uRepository;
         this.productOrderRepository = pRepository;
         this.productItemRepository = IRepository;
+        this.cartRepository = cRepository;
+        this.paymentMethodRepository = pMethod;
      }
-    public ResponseEntity<ProductOrder>  AddProductOrder(int nbProductItem, double totalAmount, Long id_user, Address address, PaymentMethod paymentMethod) {
+    public ResponseEntity<ProductOrder>  AddProductOrder(Long id_user,Long id_Pmetod, Address address) {
        
         Optional<User> user = usersRepository.findById(id_user);
-        if (!user.isPresent()){
+        Optional<Cart> cart = cartRepository.findById(user.get().getCart().getId());
+        Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(id_Pmetod);
+        double totalAmount = 0.0 ;
+        if (!user.isPresent() || !cart.isPresent() || cart.get().getProductItems().isEmpty() || !paymentMethod.isPresent() || address ==null){
            return ResponseEntity.notFound().build();
         }
+        for (ProductItem item : cart.get().getProductItems()) {
+           totalAmount = totalAmount + item.getProductView().getProduct().getPrice()*item.getNbExemplaire() ;
+        } ;
         ProductOrder productOrder = new ProductOrder();
         productOrder.setStatus(OrderStatus.IN_PROGRESS);
-        productOrder.setNbProductItem(nbProductItem);
+        productOrder.setNbProductItem(cart.get().getProductItems().size());
         productOrder.setTotalAmount(totalAmount);
         productOrder.setUser(user.get());
         productOrder.setAddress(address);
-        productOrder.setPaymentMethod(paymentMethod);
+        productOrder.setPaymentMethod(paymentMethod.get());
+        return ResponseEntity.ok(productOrder);
+    }
+
+    public ResponseEntity<ProductOrder>  AddProductOrder2(Long id_user,Long id_Pmetod) {
+
+        Optional<User> user = usersRepository.findById(id_user);
+        Optional<Cart> cart = cartRepository.findById(user.get().getCart().getId());
+        Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(id_Pmetod);
+        double totalAmount = 0.0 ;
+        if (!user.isPresent() || !cart.isPresent() || cart.get().getProductItems().isEmpty() || !paymentMethod.isPresent() || user.get().getAddress() == null){
+            return ResponseEntity.notFound().build();
+        }
+        for (ProductItem item : cart.get().getProductItems()) {
+            totalAmount = totalAmount + item.getProductView().getProduct().getPrice()*item.getNbExemplaire() ;
+        } ;
+        ProductOrder productOrder = new ProductOrder();
+        productOrder.setStatus(OrderStatus.IN_PROGRESS);
+        productOrder.setNbProductItem(cart.get().getProductItems().size());
+        productOrder.setTotalAmount(totalAmount);
+        productOrder.setUser(user.get());
+        productOrder.setAddress(user.get().getAddress());
+        productOrder.setPaymentMethod(paymentMethod.get());
         return ResponseEntity.ok(productOrder);
     }
 
@@ -44,6 +75,17 @@ public class ProductOrderService {
         Optional<ProductOrder> productOrder = productOrderRepository.findByIdAndUserId(id,id_user);
         if (productOrder.isPresent()){
             return ResponseEntity.ok(productOrder.get()) ;
+        }else {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
+    public ResponseEntity<List<ProductItem>> readProductOrderProductItems(Long id, Long id_user){
+
+        Optional<ProductOrder> productOrder = productOrderRepository.findByIdAndUserId(id,id_user);
+        if (productOrder.isPresent()){
+            return ResponseEntity.ok(productItemRepository.findByProductOrderId(id)) ;
         }else {
             return ResponseEntity.notFound().build();
         }

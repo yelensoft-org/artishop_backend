@@ -1,6 +1,6 @@
 package com.yelensoft.artishop_backend.services;
 
-import com.yelensoft.artishop_backend.Repository.AddressRepository;
+import com.yelensoft.artishop_backend.repository.AddressRepository;
 import com.yelensoft.artishop_backend.model.Address;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;

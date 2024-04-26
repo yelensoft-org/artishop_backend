@@ -5,8 +5,8 @@ import com.yelensoft.artishop_backend.exceptions.BadRequestException;
 import com.yelensoft.artishop_backend.exceptions.NotFoundException;
 import com.yelensoft.artishop_backend.model.Category;
 import com.yelensoft.artishop_backend.model.Product;
-import com.yelensoft.artishop_backend.Repository.CategoryRepository;
-import com.yelensoft.artishop_backend.Repository.ProductRepository;
+import com.yelensoft.artishop_backend.repository.CategoryRepository;
+import com.yelensoft.artishop_backend.repository.ProductRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
