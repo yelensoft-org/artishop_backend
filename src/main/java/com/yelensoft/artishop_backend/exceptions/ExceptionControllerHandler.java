@@ -7,11 +7,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Date;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ExceptionControllerHandler {
 
     @ExceptionHandler(NotAuthorizedException.class)
@@ -27,7 +28,7 @@ public class ExceptionControllerHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request){
         final String[] messageError = {""};
         ex.getBindingResult().getAllErrors().forEach( (error) -> {
@@ -42,17 +43,7 @@ public class ExceptionControllerHandler {
         );
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorMessage globalException(Exception ex, WebRequest request){
-        return new ErrorMessage(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                new Date(),
-                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                ex.getMessage(),
-                request.getDescription(false)
-        );
-    }
+
 
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -104,6 +95,18 @@ public class ExceptionControllerHandler {
         errorResponse.setPath( webRequest.getDescription(false));
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorMessage handleGlobException(WebRequest webRequest, InternalServerException ex) {
+        return new ErrorMessage(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                new Date(),
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                ex.getMessage(),
+                webRequest.getDescription(false)
+        );
     }
 
 }

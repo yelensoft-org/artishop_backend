@@ -39,23 +39,16 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-<<<<<<< HEAD
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-=======
->>>>>>> 4a28421aabc2e3b10b58145a1b85ae4448d29830
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-<<<<<<< HEAD
             <scope>runtime</scope>
-=======
-            <!--<scope>runtime</scope>-->
->>>>>>> 4a28421aabc2e3b10b58145a1b85ae4448d29830
         </dependency>
 
         <dependency>
@@ -146,8 +139,4 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-<<<<<<< HEAD
 </project>
-=======
-</project>
->>>>>>> 4a28421aabc2e3b10b58145a1b85ae4448d29830

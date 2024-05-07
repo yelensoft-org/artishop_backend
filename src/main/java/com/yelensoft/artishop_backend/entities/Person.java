@@ -33,7 +33,7 @@ public abstract class Person {
     protected String password;
 
     @NotBlank
-    protected String ImageUrl;
+    protected String imageUrl;
 
     protected LocalDateTime creationDate = LocalDateTime.now();
 
@@ -41,11 +41,9 @@ public abstract class Person {
 
     protected LocalDateTime updateDate = LocalDateTime.now();
 
-    @NotBlank
     @Enumerated(EnumType.STRING)
     protected PersonGender gender;
 
-    @NotBlank
     @Enumerated(EnumType.STRING)
     protected PersonRole role;
 

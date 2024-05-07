@@ -32,7 +32,7 @@ public class UsersService {
     public UserApp addUsers(UserApp userApp){
 
         UserApp userAppVerif = usersRepository.findByEmail(userApp.getEmail());
-        if (userAppVerif != null) throw new EntityExistsException("exist");
+        if (userAppVerif != null) throw new NotAuthorizedException("Cet utilisateur existe déjà");
         userApp.setAddress(addressService.addAddress(userApp.getAddress()));
         Cart cart = cartRepository.save(new Cart());
         userApp.setCart(cart);
