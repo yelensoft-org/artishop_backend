@@ -64,4 +64,6 @@ public class UsersService {
     }
 
 
+    public UserApp getUserById(Long userId) {
+    }
 }

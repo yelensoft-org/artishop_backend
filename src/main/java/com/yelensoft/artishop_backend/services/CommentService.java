@@ -1,6 +1,11 @@
 package com.yelensoft.artishop_backend.services;
 import com.yelensoft.artishop_backend.entities.Comment;
+import com.yelensoft.artishop_backend.entities.Product;
+import com.yelensoft.artishop_backend.entities.Store;
+import com.yelensoft.artishop_backend.entities.UserApp;
+import com.yelensoft.artishop_backend.repositories.CommentRepository;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -9,7 +14,7 @@ public class CommentService {
     private CommentRepository commentRepository;
 
     @Autowired
-    private UserService userService;
+    private UsersService userService;
 
     @Autowired
     private StoreService storeService;
@@ -25,7 +30,7 @@ public class CommentService {
             throw new RuntimeException("User with id " + userId + " does not exist");
         }
 
-        if (storeId != null && storeId.NotBlank()) {
+        if (storeId != null) {
             Store store = storeService.getStoreById(storeId);
             if (store != null) {
                 comment.setStore(store);
@@ -35,7 +40,7 @@ public class CommentService {
         }
 
         if (productId != null) {
-            Product product = productService.getProductById(productId);
+            Product product = productService.getProductById(productId).getBody();
             if (product != null) {
                 comment.setProduct(product);
             } else {

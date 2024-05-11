@@ -46,4 +46,7 @@ public class Comment {
     public void setUserApp(UserApp userApp) {
         this.userApp = userApp;
     }
+
+    public String getText() {
+    }
 }
