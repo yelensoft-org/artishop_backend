@@ -65,5 +65,6 @@ public class UsersService {
 
 
     public UserApp getUserById(Long userId) {
+        return usersRepository.findById(userId).orElse(null);
     }
 }

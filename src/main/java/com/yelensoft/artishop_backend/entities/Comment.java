@@ -32,7 +32,7 @@ public class Comment {
     private Product product;
 
     public void setText(String text) {
-        this.text = text;
+        this.content = text;
     }
 
     public void setStore(Store store) {
@@ -48,5 +48,6 @@ public class Comment {
     }
 
     public String getText() {
+        return content;
     }
 }
