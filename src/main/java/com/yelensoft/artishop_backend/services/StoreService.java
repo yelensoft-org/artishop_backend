@@ -6,5 +6,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class StoreService {
     public Store getStoreById(Long storeId) {
+        return null;
     }
 }
