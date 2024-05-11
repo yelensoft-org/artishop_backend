@@ -19,21 +19,21 @@ public class UsersController {
 
     @PostMapping("/add")
     public ResponseEntity<Object> addUsers(@Valid @RequestBody UserApp userApp){
-        return ResponseHandler.generateResponse("susses", HttpStatus.OK,usersService.addUsers(userApp));
+        return ResponseHandler.generateResponse("success", HttpStatus.OK,usersService.addUsers(userApp));
     }
 
     @GetMapping("/connect")
     public ResponseEntity<Object> connectUsers(@Valid @RequestBody AuthPojo authPojo){
-        return ResponseHandler.generateResponse("susses", HttpStatus.OK,usersService.connectUsers(authPojo));
+        return ResponseHandler.generateResponse("success", HttpStatus.OK,usersService.connectUsers(authPojo));
     }
 
     @PutMapping("/update")
     public ResponseEntity<Object> updateUser(@Valid @RequestBody UserApp userApp){
-        return ResponseHandler.generateResponse("succes", HttpStatus.OK, usersService.updateUser(userApp));
+        return ResponseHandler.generateResponse("success", HttpStatus.OK, usersService.updateUser(userApp));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteUserById(@PathVariable Long id){
-        return ResponseHandler.generateResponse("succes", HttpStatus.OK,usersService.deleteUser(id));
+        return ResponseHandler.generateResponse("success", HttpStatus.OK,usersService.deleteUser(id));
     }
 }

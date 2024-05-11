@@ -30,4 +30,20 @@ public class Comment {
 
     @ManyToOne
     private Product product;
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public void setUserApp(UserApp userApp) {
+        this.userApp = userApp;
+    }
 }
