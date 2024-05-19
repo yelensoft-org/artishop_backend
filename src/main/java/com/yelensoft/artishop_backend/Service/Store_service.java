@@ -2,17 +2,16 @@ package com.yelensoft.artishop_backend.Service;
 
 import com.yelensoft.artishop_backend.Repository.Store_repository;
 import com.yelensoft.artishop_backend.Repository.Users_repository;
+import com.yelensoft.artishop_backend.entities.Store;
+import com.yelensoft.artishop_backend.entities.UserApp;
 import com.yelensoft.artishop_backend.enumClass.PersonRole;
-import com.yelensoft.artishop_backend.model.Store;
-import com.yelensoft.artishop_backend.model.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
@@ -35,7 +34,7 @@ public class Store_service {
     //    methode pour creer une botique en fonction d'un artisan donner start
     public Store create(long id, Store store, MultipartFile multipartFile) throws Exception {
         try {
-            Users artisantExist = users_repository.findUsersById(id);
+            UserApp artisantExist = users_repository.findUsersById(id);
             if (artisantExist == null || !artisantExist.getRole().equals(PersonRole.ARTISANT)) {
                 throw new RuntimeException("Utilisateur inexistant ou non autorisé.");
             }
@@ -72,9 +71,9 @@ public class Store_service {
         }
     }
 //----------------------------------------------------------------------------------------------
-//    mehode pour appeler une store(boutique) en fonction d'un users(artisant)
-    public Store readStore(Long idArtisan){
-        return store_repository.findByUsersId(idArtisan);
+//    mehode pour appeler une store(boutique) en fonction du nom de la boutique
+    public Store readStore(String nomStore){
+        return store_repository.findStoreByName(nomStore);
 
     }
 //    ______________________________________________________________________________________________
@@ -83,28 +82,13 @@ public class Store_service {
     public String desableStore(Long id){
         Store storeExist = store_repository.findStoreById(id);
         if (storeExist !=null){
-            storeExist.setDeleted(true);
+            storeExist.setDeleted(!storeExist.isDeleted());
+            store_repository.save(storeExist);
+
         }
         return "Disable successffly!";
     }
-//    ------------------------------------------------------------------------------------------------
 
-//  methode pour calculer les nombres d'etoiles d'un store(boutique)
-    public double getLikes(Long id) {
-        Store storeExist = store_repository.findStoreById(id);
-        if (storeExist != null) {
-            double nbreVote = storeExist.getNbreVote();
-            double totalValueVote = storeExist.getTotalValueVote();
-
-            if (nbreVote > 0) {
-                return totalValueVote / nbreVote;
-            } else {
-                // Aucun vote enregistré, renvoyer 0
-                return 0.0;
-            }
-        }
-        throw new RuntimeException("ce store n'existe pas");
-    }
 //------------------------------------------------------------------------------------------------------------
 
 //    mehode pour permettre a un user de voter
@@ -119,9 +103,15 @@ public class Store_service {
             storeExist.setTotalValueVote(totalVote);
 
             if (nbreVote > 0) {
-                double averageVote = totalVote / nbreVote;
+                double averageVote =  totalVote / nbreVote; // Calculez la moyenne
+
+                // Arrondissez à un chiffre après la virgule
+                averageVote = Math.round(averageVote * 10.0) / 10.0;
+
+                storeExist.setNbreStar(averageVote);
                 store_repository.save(storeExist);
                 return averageVote;
+
             } else {
                 // Aucun vote enregistré, renvoyer 0
                 return 0.0;

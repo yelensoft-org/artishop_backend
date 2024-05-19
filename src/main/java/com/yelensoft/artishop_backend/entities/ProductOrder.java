@@ -1,7 +1,6 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
-
-import com.yelensoft.artishop_backend.enumClass.StoreStatus;
+import com.yelensoft.artishop_backend.enumClass.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -20,8 +19,7 @@ public class ProductOrder {
     private long id;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "status vide")
-    private StoreStatus status;
+    private OrderStatus status;
 
     @NotNull(message = "nbProductItem null")
     @Min(value = 1, message = "nbProductItem, valeur incorrecte")
@@ -38,10 +36,10 @@ public class ProductOrder {
     private boolean deleted = false;
 
     @ManyToOne
-    private Users users;
+    private UserApp userApp;
 
     @ManyToOne
-    private UserAddress address;
+    private Address address;
 
     @ManyToOne
     private PaymentMethod paymentMethod;

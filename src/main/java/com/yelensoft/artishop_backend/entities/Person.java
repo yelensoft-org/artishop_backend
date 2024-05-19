@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
 import com.yelensoft.artishop_backend.enumClass.PersonGender;
 import com.yelensoft.artishop_backend.enumClass.PersonRole;
@@ -16,7 +16,7 @@ public abstract class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected long id;
+    protected Long id;
 
     @NotBlank
     @Size(min = 2, max = 60, message = "invalid number of characters")
@@ -33,24 +33,22 @@ public abstract class Person {
     protected String password;
 
     @NotBlank
-    protected String ImageUrl;
+    protected String imageUrl;
 
     protected LocalDateTime creationDate = LocalDateTime.now();
 
     protected boolean deleted = false;
 
-    protected LocalDateTime updateDate;
+    protected LocalDateTime updateDate = LocalDateTime.now();
 
-    @NotBlank
     @Enumerated(EnumType.STRING)
     protected PersonGender gender;
 
-    @NotBlank
     @Enumerated(EnumType.STRING)
     protected PersonRole role;
 
     @OneToOne
-    protected UserAddress address;
+    protected Address address;
 
 
 }

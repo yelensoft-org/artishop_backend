@@ -2,14 +2,13 @@ package com.yelensoft.artishop_backend.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yelensoft.artishop_backend.Service.Store_service;
-import com.yelensoft.artishop_backend.model.Store;
+import com.yelensoft.artishop_backend.entities.Store;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartException;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -92,17 +91,17 @@ public ResponseEntity<Store> updateStore(@RequestParam("store") String storeStri
 
     }
 //----------------------------------------------------------------------------------------------------------
-    @GetMapping("/{idArtisan}")
-    public ResponseEntity<Store> fetchById(@PathVariable Long idArtisan){
+    @GetMapping("/{nom}")
+    public ResponseEntity<Store> fetchById(@PathVariable String nom){
         try {
-            Store store = storeService.readStore(idArtisan);
+            Store store = storeService.readStore(nom);
             return ResponseEntity.ok().body(store);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 //    ---------------------------------------------------------------------------------------------------
-    @GetMapping("/desable/{idStore}")
+    @PutMapping("/desable/{idStore}")
     public ResponseEntity<String> desableStore(@PathVariable Long idStore){
         try {
            String  store = storeService.desableStore(idStore);
@@ -112,11 +111,11 @@ public ResponseEntity<Store> updateStore(@RequestParam("store") String storeStri
         }
     }
 //    --------------------------------------------------------------------------------------------------
-    @GetMapping("/liker/{idStore}")
-    public ResponseEntity<Double> likeStore(@RequestParam int starNumber, @PathVariable Long idStore){
+    @GetMapping("/liker/{starNumber}/{idStore}")
+    public ResponseEntity<Double> likeStore(@PathVariable int starNumber, @PathVariable Long idStore){
         try {
-             storeService.likeStore(starNumber,idStore);
-            return new ResponseEntity(HttpStatus.OK);
+           double numberVote =  storeService.likeStore(starNumber,idStore);
+            return  ResponseEntity.ok().body(numberVote);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

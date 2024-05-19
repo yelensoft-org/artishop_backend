@@ -1,10 +1,11 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -18,11 +19,9 @@ public class Product {
     @Size(min = 2, max = 30, message = "invalid number of characters")
     private String name;
 
-    @NotNull(message = "price null")
     @DecimalMin(value = "0.1", message = "price, valeur incorrecte")
     private double price;
 
-    @NotNull
     @Min(value = 1)
     private int stockQuantity;
 
@@ -45,4 +44,10 @@ public class Product {
 
     @ManyToOne
     private Store store;
+
+    @ManyToMany
+    private List<Category> categories;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductView> productViews;
 }

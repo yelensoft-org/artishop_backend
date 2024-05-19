@@ -18,18 +18,6 @@ public class FileService {
             throw new IOException("Le fichier est vide.");
         }
 
-//
-//        Path rootlocation = Paths.get(location);
-//        if (!Files.exists(rootlocation)) {
-//            Files.createDirectories(rootlocation);
-//        }
-//        String nom = location + "\\" + file.getOriginalFilename();
-//        Path name = Paths.get(nom);
-//        if (Files.exists(name)) {
-//            Files.delete(name);
-//        }
-//        Files.copy(file.getInputStream(), rootlocation.resolve(file.getOriginalFilename()));
-
         // Générer un nom de fichier unique
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         Path filePath = Paths.get(location, fileName);

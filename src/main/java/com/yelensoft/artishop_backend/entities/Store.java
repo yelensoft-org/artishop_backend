@@ -1,6 +1,5 @@
-package com.yelensoft.artishop_backend.model;
+package com.yelensoft.artishop_backend.entities;
 
-import com.yelensoft.artishop_backend.enumClass.OrderStatus;
 import com.yelensoft.artishop_backend.enumClass.StoreStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -8,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -48,16 +48,16 @@ public class Store {
     @Enumerated(EnumType.STRING)
     private StoreStatus status = StoreStatus.CLOSE;
 
-    private double nbreVote =0.0;
+    private double nbreVote = 0.0;
 
     private double totalValueVote = 0.0;
 
     private double nbreStar = 0.0;
 
     @OneToOne
-    private Users users;
+    private UserApp userApp;
 
     @OneToOne
-    private UserAddress userAddress;
+    private Address userAddress;
 
 }
