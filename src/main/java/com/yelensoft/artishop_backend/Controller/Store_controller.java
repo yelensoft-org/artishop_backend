@@ -51,25 +51,33 @@ public class Store_controller {
         }
     }
 
+//    ----------------------------------------------------------------------------------------------
+@PutMapping("/update/{id}")
+public ResponseEntity<Store> updateStore(@RequestParam("store") String storeString,
+                                         @PathVariable Long id, @RequestParam("file") MultipartFile multipartFile) {
+    try {
+        // Convertir la chaîne JSON en objet Store
+        ObjectMapper objectMapper = new ObjectMapper();
+        Store store = objectMapper.readValue(storeString, Store.class);
+        log.info("Store JSON converted: {}", store);
 
+        // Appeler la méthode de mise à jour en utilisant les paramètres fournis
+        Store updatedStore = storeService.update(id, store, multipartFile);
 
-    //modif
-    @PostMapping(value = "/add1/{id}")
-    public ResponseEntity<Store> createStore1(@RequestPart("store") Store store,
-                                              @PathVariable Long id,
-                                              @RequestParam("file") MultipartFile multipartFile) {
-        try {
-            System.out.println("photo :" + multipartFile.getOriginalFilename());
-            // Appeler la méthode de création en utilisant les paramètres fournis
-            Store createdStore = storeService.create(id, store, multipartFile);
-
-            // Retourner une réponse avec le statut OK et l'objet Store créé
-            return ResponseEntity.ok().body(createdStore);
-        } catch (Exception e) {
-            // En cas d'erreur, retourner une réponse avec le statut d'erreur approprié et un message d'erreur
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        // Retourner une réponse avec le statut OK et l'objet Store mis à jour
+        return ResponseEntity.ok(updatedStore);
+    } catch (IOException e) {
+        log.error("Error converting store JSON: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    } catch (RuntimeException e) {
+        log.error("Error updating store: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    } catch (Exception e) {
+        log.error("Unexpected error: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
+}
+
 
 
     //    ----------------------------------------------------------------------------------------------------
@@ -113,14 +121,5 @@ public class Store_controller {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//    --------------------------------------------------------------------------------------------------
-    @PutMapping("/update/{idStore}")
-    public ResponseEntity<Store> update(@PathVariable Long idStore, Store storeDetail){
-        try {
-            Store  store = storeService.update(idStore,storeDetail);
-            return ResponseEntity.ok().body(store);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//
 }

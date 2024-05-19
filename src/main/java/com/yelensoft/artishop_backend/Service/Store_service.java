@@ -3,7 +3,6 @@ package com.yelensoft.artishop_backend.Service;
 import com.yelensoft.artishop_backend.Repository.Store_repository;
 import com.yelensoft.artishop_backend.Repository.Users_repository;
 import com.yelensoft.artishop_backend.enumClass.PersonRole;
-import com.yelensoft.artishop_backend.model.Cart;
 import com.yelensoft.artishop_backend.model.Store;
 import com.yelensoft.artishop_backend.model.Users;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -29,49 +27,39 @@ public class Store_service {
     @Autowired
     private Users_repository users_repository;
 
-//    -----------------------------------------------------------------------------------------------
-//    methode pour creer une botique en fonction d'un artisan donner start
-public Store create(long id, Store store, MultipartFile multipartFile) throws Exception {
-    try {
-        Users artisantExist = users_repository.findUsersById(id);
-        if (artisantExist == null || !artisantExist.getRole().equals(PersonRole.ARTISANT)) {
-            throw new RuntimeException("Utilisateur inexistant ou non autorisé.");
+    @Autowired
+    private  FileService fileService;
+
+
+    //    -----------------------------------------------------------------------------------------------
+    //    methode pour creer une botique en fonction d'un artisan donner start
+    public Store create(long id, Store store, MultipartFile multipartFile) throws Exception {
+        try {
+            Users artisantExist = users_repository.findUsersById(id);
+            if (artisantExist == null || !artisantExist.getRole().equals(PersonRole.ARTISANT)) {
+                throw new RuntimeException("Utilisateur inexistant ou non autorisé.");
+            }
+
+            String filePath = fileService.saveFile(multipartFile);
+            // Convertir le chemin de fichier en URL
+            String fileUrl = "http://localhost/artImage/" + Paths.get(filePath).getFileName().toString();
+
+            System.out.println(filePath + "----------------------------------------");
+            store.setImageUrl(fileUrl);
+//            store.setUpdateDate(LocalDate.now());
+
+            Store storeExist = store_repository.findByEmailAndName(store.getEmail(), store.getName());
+            if (storeExist != null) {
+                throw new RuntimeException("Le nom ou l'adresse e-mail de cette boutique existe déjà.");
+            }
+
+            store_repository.save(store);
+            return store;
+        } catch (RuntimeException e) {
+            log.error("Runtime error: {}", e.getMessage(), e);
+            throw new Exception("Une erreur est survenue lors de la création de la boutique.", e);
         }
-
-        String location = "C:\\xampp\\htdocs\\artImage";
-        Path rootlocation = Paths.get(location);
-        if (!Files.exists(rootlocation)) {
-            Files.createDirectories(rootlocation);
-        }
-
-        String nom = location + "\\" + multipartFile.getOriginalFilename();
-        Path name = Paths.get(nom);
-        if (Files.exists(name)) {
-            Files.delete(name);
-        }
-
-        Files.copy(multipartFile.getInputStream(), rootlocation.resolve(multipartFile.getOriginalFilename()));
-        store.setImageUrl("artImage/" + multipartFile.getOriginalFilename());
-        store.setUpdateDate(LocalDate.now());
-
-        Store storeExist = store_repository.findByEmailAndName(store.getEmail(), store.getName());
-        if (storeExist != null) {
-            throw new RuntimeException("Le nom ou l'adresse e-mail de cette boutique existe déjà.");
-        }
-
-        store_repository.save(store);
-        return store;
-    } catch (IOException e) {
-        log.error("File operation error: {}", e.getMessage(), e);
-        throw new Exception("Une erreur est survenue lors de la gestion du fichier d'image.", e);
-    } catch (RuntimeException e) {
-        log.error("Runtime error: {}", e.getMessage(), e);
-        throw new Exception("Une erreur est survenue lors de la création de la boutique.", e);
     }
-}
-
-
-
 
     //    ------------------------------------------------------------------------------------------------
 //    methode pour appeler tout les store(boutique)
@@ -144,28 +132,36 @@ public Store create(long id, Store store, MultipartFile multipartFile) throws Ex
     }
 //    -----------------------------------------------------------------------------------------------
 //    methode pour modifier les information d'un store(boutique)
-public Store update(Long idStore, Store updatedStoreDetails) {
-    // Recherche du magasin existant par son ID
-    Store existingStore = store_repository.findById(idStore)
-            .orElseThrow(() -> new NoSuchElementException("Le magasin avec l'ID " + idStore + " n'existe pas."));
+    public Store update(Long idStore, Store updatedStoreDetails, MultipartFile multipartFile) {
+        // Recherche du magasin existant par son ID
+        Store existingStore = store_repository.findById(idStore)
+                .orElseThrow(() -> new NoSuchElementException("Le magasin avec l'ID " + idStore + " n'existe pas."));
 
-    // Mise à jour des détails du magasin
-    existingStore.setName(updatedStoreDetails.getName());
-    existingStore.setDescription(updatedStoreDetails.getDescription());
-    existingStore.setNumTel1(updatedStoreDetails.getNumTel1());
-    existingStore.setNumTel2(updatedStoreDetails.getNumTel2());
-    existingStore.setEmail(updatedStoreDetails.getEmail());
-//    existingStore.setDeleted(updatedStoreDetails.getIs());
-    existingStore.setStatus(updatedStoreDetails.getStatus());
-    existingStore.setNbreVote(updatedStoreDetails.getNbreVote());
-    existingStore.setTotalValueVote(updatedStoreDetails.getTotalValueVote());
-    existingStore.setNbreStar(updatedStoreDetails.getNbreStar());
-    existingStore.setUserAddress(updatedStoreDetails.getUserAddress());
-    existingStore.setUpdateDate(LocalDate.now());
+        // Mise à jour des détails du magasin
+        existingStore.setName(updatedStoreDetails.getName());
+        existingStore.setDescription(updatedStoreDetails.getDescription());
+        existingStore.setNumTel1(updatedStoreDetails.getNumTel1());
+        existingStore.setEmail(updatedStoreDetails.getEmail());
+        existingStore.setUserAddress(updatedStoreDetails.getUserAddress());
+        existingStore.setUpdateDate(LocalDate.now());
 
-    // Enregistrement des changements dans la base de données
-    return store_repository.save(existingStore);
-}
+
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            try {
+                String filePath = fileService.saveFile(multipartFile);
+
+                String fileUrl = "http://localhost/artImage/" + Paths.get(filePath).getFileName().toString();
+
+                System.out.println(filePath + "----------------------------------------");
+                existingStore.setImageUrl(fileUrl);
+            } catch (IOException e) {
+                throw new RuntimeException("Erreur lors de l'enregistrement du fichier: " + e.getMessage(), e);
+            }
+        }
+
+        // Enregistrement des changements dans la base de données
+        return store_repository.save(existingStore);
+    }
 
 //-----------------------------------------------------------------------------------------------------
 

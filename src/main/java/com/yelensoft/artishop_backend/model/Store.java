@@ -1,6 +1,7 @@
 package com.yelensoft.artishop_backend.model;
 
 import com.yelensoft.artishop_backend.enumClass.OrderStatus;
+import com.yelensoft.artishop_backend.enumClass.StoreStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -45,7 +46,7 @@ public class Store {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private StoreStatus status = StoreStatus.CLOSE;
 
     private double nbreVote =0.0;
 
