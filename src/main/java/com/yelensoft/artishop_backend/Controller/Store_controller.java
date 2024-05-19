@@ -115,9 +115,9 @@ public class Store_controller {
     }
 //    --------------------------------------------------------------------------------------------------
     @PutMapping("/update/{idStore}")
-    public ResponseEntity<Store> update(@PathVariable Long idStore){
+    public ResponseEntity<Store> update(@PathVariable Long idStore, Store storeDetail){
         try {
-            Store  store = storeService.update(idStore);
+            Store  store = storeService.update(idStore,storeDetail);
             return ResponseEntity.ok().body(store);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
