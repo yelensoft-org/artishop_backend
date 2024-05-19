@@ -5,13 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface Store_repository extends JpaRepository<Store, Integer> {
+public interface Store_repository extends JpaRepository<Store, Long> {
 
 //    verifier si un artisant exist par son id
 
     Store findByEmailAndName(String email, String name);
     Store findByUsersId(Long id);
-    Store findById(Long id);
+    Store findStoreById(Long id);
     double findByNbreVote(double vote);
     double findByTotalValueVote(double totalVote);
 }

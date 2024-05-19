@@ -4,8 +4,10 @@ import com.yelensoft.artishop_backend.enumClass.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,7 +16,7 @@ public class Store {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotBlank
     private String name;
@@ -35,13 +37,13 @@ public class Store {
     @Email
     private String email;
 
-    private LocalDateTime creationDate = LocalDateTime.now();
+    private LocalDate creationDate = LocalDate.now();
 
-    private LocalDateTime updateDate;
+    private LocalDate updateDate;
 
     private boolean deleted = false;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
