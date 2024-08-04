@@ -1,8 +1,11 @@
 HELP.md
-target/
+#J'ai mis target en commentaire le deployement sur render
+#target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+compose.yaml
 
 ### STS ###
 .apt_generated
