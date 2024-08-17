@@ -15,8 +15,8 @@ public class ProductItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull(message = "nbExemplaire null")
-    @Min(value = 1, message = "nbExemplaire, valeur incorrecte")
+    @NotNull(message = "Choisi un nombre d'exemplaire")
+    @Min(value = 1, message = "Exemplaire incorrecte")
     private int nbExemplaire;
 
     private LocalDateTime creationDate = LocalDateTime.now();
@@ -28,6 +28,7 @@ public class ProductItem {
 
     @ManyToOne
     private ProductOrder productOrder;
+
     @ManyToOne
     private Cart cart;
 }

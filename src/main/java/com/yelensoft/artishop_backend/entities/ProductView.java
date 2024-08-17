@@ -17,7 +17,7 @@ public class ProductView {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "champs imageUrl vide")
+    @NotBlank(message = "Le nom de l'image est vide")
     @Size(min = 2, message = "champs imageUrl, nombre de caractère incorrecte")
     private String imageUrls;
 
@@ -28,8 +28,8 @@ public class ProductView {
     @Size(min = 2, message = "sizes, nombre de caractère incorrecte")
     private String sizes;
 
-    @NotBlank(message = "color null")
-    @Size(min = 2, message = "color, nombre de caractère incorrecte")
+    @NotBlank(message = "Choisir une couleur")
+    @Size(min = 2, message = "couleur, nombre de caractère incorrecte")
     private String color;
 
     private LocalDateTime creationDate = LocalDateTime.now();

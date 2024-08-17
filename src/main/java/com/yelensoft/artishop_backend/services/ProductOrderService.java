@@ -1,5 +1,7 @@
 package com.yelensoft.artishop_backend.services;
 
+import com.yelensoft.artishop_backend.configuration.ApiSuccessResponse;
+import com.yelensoft.artishop_backend.configuration.NoteFundException;
 import com.yelensoft.artishop_backend.entities.*;
 import com.yelensoft.artishop_backend.repositories.CartRepository;
 import com.yelensoft.artishop_backend.repositories.PaymentMethodRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.yelensoft.artishop_backend.enumClass.OrderStatus;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +25,8 @@ public class ProductOrderService {
     final private ProductItemRepository productItemRepository;
     final private CartRepository cartRepository;
     final private PaymentMethodRepository paymentMethodRepository;
+
+
 
     public ProductOrderService(UsersRepository uRepository,PaymentMethodRepository pMethod ,CartRepository cRepository,ProductItemRepository IRepository,ProductOrderRepository pRepository){
         this.usersRepository = uRepository;
@@ -135,5 +140,49 @@ public class ProductOrderService {
         existingOrder.setPaymentMethod(updatedOrder.getPaymentMethod());
         ProductOrder savedOrder = productOrderRepository.save(existingOrder);
         return ResponseEntity.ok(savedOrder);
+    }
+
+    //    -----------------------------------------------------------------------------
+    public Object addOrder(List<ProductOrder> productOrders) {
+
+        for (ProductOrder pOrder : productOrders) {
+            UserApp userExist = usersRepository.findUserAppById(pOrder.getUserApp().getId());
+            if (userExist == null) {
+                throw new NoteFundException("Le compte utilisateur n'existe pas !");
+            }
+
+            validateProductOrder(pOrder);
+
+            pOrder.setStatus(OrderStatus.IN_PROGRESS);
+            pOrder.setUserApp(userExist);
+            productOrderRepository.save(pOrder);
+        }
+
+        return ApiSuccessResponse.successResponse("Commande effectuée avec succès!");
+    }
+
+        private void validateProductOrder(ProductOrder pOrder) {
+            if (pOrder.getAddress() == null) {
+                throw new NoteFundException("Adresse non valide.");
+            }
+            if (pOrder.getPaymentMethod() == null) {
+                throw new NoteFundException("Mode de paiement non valide.");
+            }
+        }
+    //------------------------------------get productOrder by id
+    public ProductOrder getProductOrderDetailById(Long id, Long id_user) {
+       return productOrderRepository.getByIdAndUserAppId(id, id_user);
+
+    }
+
+    //    -------------------------------------get list productOrderActif
+    public List<ProductOrder> getListProductOrder(Long id_user) {
+        LocalDateTime dateEnd = LocalDateTime.now();
+        LocalDateTime startDate = dateEnd.minusDays(15);
+        List<ProductOrder> list = productOrderRepository.findByUserAppIdAndCreationDateBetween(id_user,startDate,dateEnd);
+        if (list.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return list;
     }
 }

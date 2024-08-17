@@ -25,7 +25,7 @@ public class ProductOrder {
     @Min(value = 1, message = "nbProductItem, valeur incorrecte")
     private int nbProductItem;
 
-    @NotNull(message = "totalAmount null")
+    @NotNull(message = "total montant est null")
     @DecimalMin(value = "0.0", message = "totalAmount, valeur incorrecte")
     private double totalAmount = 0.0;
 
