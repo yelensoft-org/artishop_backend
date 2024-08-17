@@ -28,4 +28,6 @@ public class ProductItem {
 
     @ManyToOne
     private ProductOrder productOrder;
+    @ManyToOne
+    private Cart cart;
 }

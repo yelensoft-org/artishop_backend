@@ -97,7 +97,7 @@ public class ExceptionControllerHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(Exception.class)
+    /*@ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorMessage handleGlobException(WebRequest webRequest, InternalServerException ex) {
         return new ErrorMessage(
@@ -107,6 +107,6 @@ public class ExceptionControllerHandler {
                 ex.getMessage(),
                 webRequest.getDescription(false)
         );
-    }
+    }*/
 
 }

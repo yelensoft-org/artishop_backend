@@ -30,4 +30,6 @@ public class Notification {
 
     @ManyToOne
     private UserApp userApp;
+
+
 }
