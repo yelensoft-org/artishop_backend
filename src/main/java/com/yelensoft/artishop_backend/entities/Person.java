@@ -49,4 +49,6 @@ public abstract class Person {
 
     @OneToOne
     protected Address address;
+
+
 }

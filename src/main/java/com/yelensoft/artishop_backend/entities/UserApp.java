@@ -12,4 +12,6 @@ public class UserApp extends Person{
 
     @OneToOne
     private Cart cart;
+
+
 }

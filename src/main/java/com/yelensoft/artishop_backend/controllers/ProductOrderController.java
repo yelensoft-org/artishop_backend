@@ -64,4 +64,25 @@ public class ProductOrderController {
     public ResponseEntity<String> deleteProductOrder(@RequestParam Long id,@RequestParam Long id_user) {
         return productOrderService.deleteProductOrder(id,id_user);
     }*/
+
+//    -----------------------------------------------------------------
+    @PostMapping("/orders")
+    @Operation(summary = "Passer une commande avec les produits du panier d'un utilisateur")
+    public Object commandeByCartProduct(@RequestBody List<ProductOrder> productItemList) {
+        return productOrderService.addOrder(productItemList);
+    }
+
+//    ------------------------------------------------------------------------
+    @PostMapping("/orders/{orderId}/{useId}")
+    @Operation(summary = "Recuperer les detail d'une commande")
+    public ProductOrder getProductOrderViews(@PathVariable Long orderId, @PathVariable Long useId) {
+        return productOrderService.getProductOrderDetailById(orderId, useId);
+    }
+
+//    -----------------------------------------------------------------------
+    @GetMapping("/orders/{userId}")
+    @Operation(summary = "Recuperer la liste des commandes d'un utilisateur")
+    public List<ProductOrder> getProductOrderList(@PathVariable Long userId) {
+        return productOrderService.getListProductOrder(userId);
+    }
 }
