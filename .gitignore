@@ -5,7 +5,7 @@ HELP.md
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-#compose.yaml
+compose.yaml
 
 ### STS ###
 .apt_generated
