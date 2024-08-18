@@ -1,6 +1,6 @@
 HELP.md
 #J'ai mis target en commentaire le deployement sur render
-target/
+#target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

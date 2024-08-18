@@ -40,6 +40,13 @@ public class ProductController {
         return productService.getAllProductsByUser(fromIndex, limit);
     }
 
+    @Operation(summary = "Recupère une liste de produits par page")
+    @GetMapping(value = "productsPerPage/{idUser}")
+    public ResponseEntity<?> getAllProductsPerPage(@PathVariable Long idUser, @RequestParam("page") int page,
+                                              @RequestParam("size") int size){
+        return productService.getAllProductPerPage(idUser, page, size);
+    }
+
     @GetMapping("products/{productId}")
     @Operation(summary = "Récuperer un produit par son ID")
     public ResponseEntity<Product> getProductById(@PathVariable Long productId) {

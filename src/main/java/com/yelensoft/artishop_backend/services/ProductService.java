@@ -1,6 +1,9 @@
 package com.yelensoft.artishop_backend.services;
 
+import com.yelensoft.artishop_backend.configuration.ResponseHandler;
 import com.yelensoft.artishop_backend.dto.AddProductDto;
+import com.yelensoft.artishop_backend.dto.ProductPresentationDto;
+import com.yelensoft.artishop_backend.entities.UserApp;
 import com.yelensoft.artishop_backend.exceptions.BadRequestException;
 import com.yelensoft.artishop_backend.exceptions.NotFoundException;
 import com.yelensoft.artishop_backend.entities.Product;
@@ -8,6 +11,12 @@ import com.yelensoft.artishop_backend.entities.Store;
 import com.yelensoft.artishop_backend.repositories.CategoryRepository;
 import com.yelensoft.artishop_backend.repositories.ProductRepository;
 import com.yelensoft.artishop_backend.repositories.StoreRepository;
+import com.yelensoft.artishop_backend.repositories.UsersRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,17 +29,19 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
+    private final UsersRepository usersRepository;
     public static int MAX_LIMIT = 20;
 
-    public ProductService(ProductRepository productRepository, StoreRepository storeRepository, CategoryRepository categoryRepository) {
+    /*public ProductService(ProductRepository productRepository, StoreRepository storeRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.storeRepository = storeRepository;
         this.categoryRepository = categoryRepository;
-    }
+    }*/
 
     public ResponseEntity<Product> getProductById(Long productId) {
         try {
@@ -111,8 +122,34 @@ public class ProductService {
         }
     }
 
+
+
     public List<Product> getAllProductsByStoreId(Long storeId) {
         return productRepository.findAllByStoreIdAndDeletedFalse(storeId);
+    }
+
+    public ResponseEntity<?> getAllProductPerPage(Long idUser, int page, int size){
+        try {
+            UserApp userApp = usersRepository.findById(idUser).orElseThrow(()-> new NotFoundException("utilisateur invalide"));
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Product> productPage = productRepository.findAll(pageable);
+            List<Product> productList = productPage.getContent();
+            List<ProductPresentationDto> presentationDtos = productList.stream().map(
+                    product -> {
+                        return new ProductPresentationDto(
+                                product.getId(),
+                                product.getName(),
+                                product.getPrice(),
+                                product.getProductViews().getFirst().getImageUrls(),
+                                userApp.getCart().getProductItems().stream().anyMatch(productItem ->
+                                        productItem.getProductView().getProduct().getId() == product.getId())
+                                );
+                    }
+            ).toList();
+            return ResponseHandler.generateResponse("success", HttpStatus.OK,presentationDtos);
+        }catch (Exception e){
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
     public List<Product> getAllProductsByUser(int fromIndex, int limit) {
