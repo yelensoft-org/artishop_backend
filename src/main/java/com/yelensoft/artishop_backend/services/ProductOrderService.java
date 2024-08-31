@@ -45,7 +45,7 @@ public class ProductOrderService {
            return ResponseEntity.notFound().build();
         }
         for (ProductItem item : cart.get().getProductItems()) {
-           totalAmount = totalAmount + item.getProductView().getProduct().getPrice()*item.getNbExemplaire() ;
+           totalAmount = totalAmount + item.getProductView().getProductId().getPrice()*item.getNbExemplaire() ;
         } ;
         ProductOrder productOrder = new ProductOrder();
         productOrder.setStatus(OrderStatus.IN_PROGRESS);
@@ -67,7 +67,7 @@ public class ProductOrderService {
             return ResponseEntity.notFound().build();
         }
         for (ProductItem item : cart.get().getProductItems()) {
-            totalAmount = totalAmount + item.getProductView().getProduct().getPrice()*item.getNbExemplaire() ;
+            totalAmount = totalAmount + item.getProductView().getProductId().getPrice()*item.getNbExemplaire() ;
         } ;
         ProductOrder productOrder = new ProductOrder();
         productOrder.setStatus(OrderStatus.IN_PROGRESS);
@@ -161,7 +161,7 @@ public class ProductOrderService {
         return ApiSuccessResponse.successResponse("Commande effectuée avec succès!");
     }
 
-        private void validateProductOrder(ProductOrder pOrder) {
+    private void validateProductOrder(ProductOrder pOrder) {
             if (pOrder.getAddress() == null) {
                 throw new NoteFundException("Adresse non valide.");
             }

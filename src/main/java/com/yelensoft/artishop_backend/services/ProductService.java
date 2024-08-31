@@ -1,6 +1,7 @@
 package com.yelensoft.artishop_backend.services;
 
-import com.yelensoft.artishop_backend.dto.AddProductDto;
+import com.yelensoft.artishop_backend.dto.ProductDto;
+import com.yelensoft.artishop_backend.entities.Category;
 import com.yelensoft.artishop_backend.exceptions.BadRequestException;
 import com.yelensoft.artishop_backend.exceptions.NotFoundException;
 import com.yelensoft.artishop_backend.entities.Product;
@@ -8,19 +9,19 @@ import com.yelensoft.artishop_backend.entities.Store;
 import com.yelensoft.artishop_backend.repositories.CategoryRepository;
 import com.yelensoft.artishop_backend.repositories.ProductRepository;
 import com.yelensoft.artishop_backend.repositories.StoreRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ProductService {
+
+    @Autowired
+    private  ValidatService validatService;
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
@@ -44,56 +45,63 @@ public class ProductService {
         }
     }
 
-    public ResponseEntity<Product> addProduct(Long userId, Long storeId, AddProductDto request){
-        try {
-            Optional<Store> optionalStore = storeRepository.findByIdAndUserAppId(storeId, userId);
-            if (optionalStore.isPresent()) {
-                Product product = request.getProduct();
-                product.setCategories(categoryRepository.findAllById(request.getIdsCategories()));
-                product.setStore(optionalStore.get());
-                product.setAvailable(true);
-                product.setDeleted(false);
-                product.setPublished(false);
-                product.setCreationDate(LocalDateTime.now());
-                product.setUpdateDate(LocalDateTime.now());
 
-                Product productSaved = productRepository.save(product);
-                URI location = ServletUriComponentsBuilder.
-                        fromCurrentContextPath().path("{id}").
-                        buildAndExpand(productSaved.getId()).toUri();
-                return ResponseEntity.created(location).body(productSaved);
+    //-------------------------------------------------------------------------------
+    public ProductDto addProduct(long storeId , ProductDto productDto) {
 
-            }
-            throw new NotFoundException("Vous n'ête pas autoriser à effectuer une telle action");
-        }catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
+        Store store = storeRepository.findById(storeId);
+        if(store == null) {
+            throw new NotFoundException("Cette boutique  n'existe pas");
         }
+
+        validatService.validateProduct(productDto);
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        // Convertir ProductDto en Product
+
+        Product product = modelMapper.map(productDto, Product.class);
+        List<Category> categories = new ArrayList<>();
+
+        for(Category category : product.getCategoryIds()) {
+            Category categoryExist = categoryRepository.findById(category.getId());
+            categories.add(categoryExist);
+
+        }
+
+        product.setCategoryIds(categories);
+        product.setStore(store);
+        Product productSaved = productRepository.save(product);
+
+        System.out.println("-------------------pppppppp" + productSaved);
+         return  ProductDto.toGetDtoProduct(productSaved);
+
     }
 
 
-    public ResponseEntity<Product> updateProduct(Long userId, Long storeId, Long productId, Map<String, Object> updateDataMap) {
-        try {
-            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreUserAppIdAndDeletedFalse(productId, storeId, userId);
-            if(productOptional.isPresent()){
-                Product productUpdate = productOptional.get();
-
-                productUpdate.setName((String) updateDataMap.getOrDefault("name", productUpdate.getName()));
-                productUpdate.setDescription((String) updateDataMap.getOrDefault("description", productUpdate.getDescription()));
-                productUpdate.setPrice((Double) updateDataMap.getOrDefault("price", productUpdate.getPrice()));
-                productUpdate.setStockQuantity((int) updateDataMap.getOrDefault("stockQuantity", productUpdate.getStockQuantity()));
-                productUpdate.setDeleted((boolean) updateDataMap.getOrDefault("deleted", productUpdate.isDeleted()));
-                productUpdate.setPublished((boolean) updateDataMap.getOrDefault("published", productUpdate.isPublished()));
-                productUpdate.setAvailable((boolean) updateDataMap.getOrDefault("available", productUpdate.isAvailable()));
-                productUpdate.setGlobalSize((String) updateDataMap.getOrDefault("globalSize", productUpdate.getGlobalSize()));
-                productUpdate.setUpdateDate(LocalDateTime.now());
-
-                return ResponseEntity.ok(productRepository.save(productUpdate));
-            }
-            throw new NotFoundException("Vous n'ête pas autorisé à modifier ce produit ou bien le produit n'existe pas dans la base de données");
-        }catch (Exception e){
-            throw new BadRequestException(e.getMessage());
-        }
-    }
+//    public ResponseEntity<Product> updateProduct(Long userId, Long storeId, Long productId, Map<String, Object> updateDataMap) {
+//        try {
+//            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreUserAppIdAndDeletedFalse(productId, storeId, userId);
+//            if(productOptional.isPresent()){
+//                Product productUpdate = productOptional.get();
+//
+//                productUpdate.setName((String) updateDataMap.getOrDefault("name", productUpdate.getName()));
+//                productUpdate.setDescription((String) updateDataMap.getOrDefault("description", productUpdate.getDescription()));
+//                productUpdate.setPrice((Double) updateDataMap.getOrDefault("price", productUpdate.getPrice()));
+//                productUpdate.setQuantity((int) updateDataMap.getOrDefault("stockQuantity", productUpdate.getQuantity()));
+//                productUpdate.setDeleted((boolean) updateDataMap.getOrDefault("deleted", productUpdate.isDeleted()));
+//                productUpdate.setPublished((boolean) updateDataMap.getOrDefault("published", productUpdate.isPublished()));
+//                productUpdate.setAvailable((boolean) updateDataMap.getOrDefault("available", productUpdate.isAvailable()));
+////                productUpdate.setGlobalSize((String) updateDataMap.getOrDefault("globalSize", productUpdate.getGlobalSize()));
+//                productUpdate.setUpdateDate(LocalDateTime.now());
+//
+//                return ResponseEntity.ok(productRepository.save(productUpdate));
+//            }
+//            throw new NotFoundException("Vous n'ête pas autorisé à modifier ce produit ou bien le produit n'existe pas dans la base de données");
+//        }catch (Exception e){
+//            throw new BadRequestException(e.getMessage());
+//        }
+//    }
 
     public ResponseEntity<Boolean> deleteProduct(Long userId, Long storeId, Long productId) {
         try {

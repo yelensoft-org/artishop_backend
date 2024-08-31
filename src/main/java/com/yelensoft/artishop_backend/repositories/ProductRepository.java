@@ -16,4 +16,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Optional<Product> findByIdAndStoreIdAndDeletedFalse(Long productId, Long storeId);
     Optional<Product> findByIdAndDeletedFalse(long id);
+
+
+    Product getByNameAndCategoryIdsId(String name, Long categoriesId);
+
+    Product findById(long idProduit);
 }

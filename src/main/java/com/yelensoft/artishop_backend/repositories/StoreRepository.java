@@ -11,4 +11,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     Optional<Store> findByUserAppId(Long artisanId);
 
     Optional<Store> findByIdAndUserAppId(Long storeId, Long userId);
+
+    Store findById(long storeId);
 }

@@ -30,13 +30,13 @@ public class ProductView {
 
     @NotBlank(message = "Choisir une couleur")
     @Size(min = 2, message = "couleur, nombre de caractère incorrecte")
-    private String color;
+    private String colors;
 
     private LocalDateTime creationDate = LocalDateTime.now();
 
-    private LocalDateTime updateDate;
+    private LocalDateTime updateDate = LocalDateTime.now();
 
     @ManyToOne
     @JsonIgnore
-    private Product product;
+    private Product productId;
 }

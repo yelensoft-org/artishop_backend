@@ -1,12 +1,16 @@
 package com.yelensoft.artishop_backend.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yelensoft.artishop_backend.dto.ProductViewsDto;
 import com.yelensoft.artishop_backend.entities.ProductView;
 import com.yelensoft.artishop_backend.services.ProductViewService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -53,5 +57,17 @@ public class ProductViewController {
     @Operation(summary = "Récuperer une vue par son ID")
     public ResponseEntity<ProductView> getProductViewById(@PathVariable Long productViewId) {
         return productViewService.getProductViewById(productViewId);
+    }
+
+//    ------------------------------------------------------
+    @PostMapping("/add-product-view")
+    @Operation(summary = "Ajout la view a un produit existante")
+    public ProductViewsDto addProductViews(@RequestParam("view") String productViewsDtoString,
+                                           @RequestParam("file") List<MultipartFile> file) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        ProductViewsDto productViewsDto = mapper.readValue(productViewsDtoString, ProductViewsDto.class);
+
+        return productViewService.addProductView(productViewsDto, file);
     }
 }

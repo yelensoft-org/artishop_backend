@@ -1,6 +1,6 @@
 package com.yelensoft.artishop_backend.controllers;
 
-import com.yelensoft.artishop_backend.dto.AddProductDto;
+import com.yelensoft.artishop_backend.dto.ProductDto;
 import com.yelensoft.artishop_backend.entities.Product;
 import com.yelensoft.artishop_backend.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/")
+@RequestMapping("/api/v1/")
 public class ProductController {
     final private ProductService productService;
 
@@ -20,11 +20,18 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("users/{userId}/stores/{storeId}/products/add")
-    @Operation(summary = "Ajout d'un nouveau produit par un artisan")
-    public ResponseEntity<Product> addProduct(@PathVariable Long userId, @PathVariable Long storeId,
-                                              @Valid @RequestBody AddProductDto request) {
-        return productService.addProduct(userId, storeId, request);
+//    @PostMapping("users/{userId}/stores/{storeId}/products/add")
+//    @Operation(summary = "Ajout d'un nouveau produit par un artisan")
+//    public ResponseEntity<Product> addProduct(@PathVariable Long userId, @PathVariable Long storeId,
+//                                              @Valid @RequestBody ProductDto request) {
+//        return productService.addProduct(userId, storeId, request);
+//    }
+
+    @PostMapping("/add-product-with-multiple-category/{storeId}")
+    @Operation(summary = "Ajouter un produit avec l'id de la boutique")
+    public ProductDto addProductWithMultipleCategory(@PathVariable long storeId, @Valid @RequestBody ProductDto productDto) {
+       System.out.println( "---------------------" + productDto);
+        return productService.addProduct(storeId, productDto);
     }
 
     @Operation(summary = "Récuperer les produits stocker dans une boutique")
@@ -46,12 +53,12 @@ public class ProductController {
         return productService.getProductById(productId);
     }
 
-    @Operation(summary = "Modifier un produit dans une boutique")
-    @PatchMapping("users/{userId}/stores/{storeId}/products/{productId}/update")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long userId, @PathVariable Long storeId, @PathVariable Long productId,
-                                                 @RequestBody Map<String, Object> updateDataMap) {
-        return productService.updateProduct(userId, storeId, productId, updateDataMap);
-    }
+//    @Operation(summary = "Modifier un produit dans une boutique")
+//    @PatchMapping("users/{userId}/stores/{storeId}/products/{productId}/update")
+//    public ResponseEntity<Product> updateProduct(@PathVariable Long userId, @PathVariable Long storeId, @PathVariable Long productId,
+//                                                 @RequestBody Map<String, Object> updateDataMap) {
+//        return productService.updateProduct(userId, storeId, productId, updateDataMap);
+//    }
 
     @Operation(summary = "Supprimer un produit")
     @DeleteMapping("users/{userId}/stores/{storeId}/products/{productId}/delete")

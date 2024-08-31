@@ -57,7 +57,7 @@ public class CategoryService {
     }
 
     private ResponseEntity<String> addCategoryToProduct(Product product, List<Category> categories) {
-        product.setCategories(categories);
+        product.setCategoryIds(categories);
         productRepository.save(product);
         return ResponseEntity.ok("Ajout reussie");
     }
@@ -82,7 +82,7 @@ public class CategoryService {
     }
 
     private ResponseEntity<String> deleteCategoryFromProduct(Product product, Category category) {
-        product.getCategories().remove(category);
+        product.getCategoryIds().remove(category);
         productRepository.save(product);
         return ResponseEntity.ok("Suppression reussie");
     }

@@ -1,23 +1,30 @@
 package com.yelensoft.artishop_backend.services;
 
+import com.yelensoft.artishop_backend.Service.FileService;
+import com.yelensoft.artishop_backend.dto.ProductViewsDto;
 import com.yelensoft.artishop_backend.exceptions.BadRequestException;
 import com.yelensoft.artishop_backend.exceptions.NotFoundException;
 import com.yelensoft.artishop_backend.entities.Product;
 import com.yelensoft.artishop_backend.entities.ProductView;
 import com.yelensoft.artishop_backend.repositories.ProductRepository;
 import com.yelensoft.artishop_backend.repositories.ProductViewRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ProductViewService {
+
+    @Autowired
+    private FileService fileService;
     final private ProductViewRepository productViewRepository;
     final private ProductRepository productRepository;
 
@@ -35,8 +42,8 @@ public class ProductViewService {
                 Product product = productOptional.get();
                 int sum = product.getProductViews().stream().map(ProductView::getNbAvailable)
                         .reduce(0, Integer::sum);
-                if (product.getStockQuantity()>=(sum+productView.getNbAvailable())) {
-                    productView.setProduct(product);
+                if (product.getQuantity()>=(sum+productView.getNbAvailable())) {
+                    productView.setProductId(product);
                     productView.setCreationDate(LocalDateTime.now());
                     productView.setUpdateDate(LocalDateTime.now());
 
@@ -60,7 +67,7 @@ public class ProductViewService {
                                                          Map<String, Object> updateDataMap) {
         try {
             Optional<ProductView> productViewOptional = productViewRepository
-                    .findByIdAndProductIdAndProductStoreIdAndProductStoreUserAppId(
+                    .findByIdAndProductIdIdAndProductIdStoreIdAndProductIdStoreUserAppId(
                             productViewId, productId, storeId, userId
                     );
             if(productViewOptional.isPresent()){
@@ -72,8 +79,8 @@ public class ProductViewService {
                         productViewUpdate.getImageUrls()));
                 productViewUpdate.setNbAvailable((int) updateDataMap.getOrDefault("nbAvailable",
                         productViewUpdate.getNbAvailable()));
-                productViewUpdate.setColor((String) updateDataMap.getOrDefault("color",
-                        productViewUpdate.getColor()));
+                productViewUpdate.setColors((String) updateDataMap.getOrDefault("color",
+                        productViewUpdate.getColors()));
                 productViewUpdate.setUpdateDate(LocalDateTime.now());
 
                 return ResponseEntity.ok(productViewRepository.save(productViewUpdate));
@@ -89,7 +96,7 @@ public class ProductViewService {
                                                      Long productViewId) {
         try {
             Optional<ProductView> productViewOptional = productViewRepository
-                    .findByIdAndProductIdAndProductStoreIdAndProductStoreUserAppId(
+                    .findByIdAndProductIdIdAndProductIdStoreIdAndProductIdStoreUserAppId(
                             productViewId, productId, storeId, userId
                     );
             if (productViewOptional.isPresent()){
@@ -104,7 +111,7 @@ public class ProductViewService {
     }
 
     public List<ProductView> getAllProductViewByProductId(Long productId) {
-        return productViewRepository.findAllByProductId(productId);
+        return productViewRepository.findAllByProductIdId(productId);
     }
 
     public ResponseEntity<ProductView> getProductViewById(Long productViewId) {
@@ -117,5 +124,45 @@ public class ProductViewService {
         }catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+    }
+
+    //    -------------------------------------------------------------------------------
+    public ProductViewsDto addProductView(ProductViewsDto productView, List<MultipartFile> multipartFile) throws IOException {
+        Product product = productRepository.findById(productView.getProductId());
+        if(product != null){
+            if(product.getQuantity() < productView.getNbAvailable()){
+                throw new NotFoundException("La quantité de la view est supérieure a la quantité du produit");
+            }
+            StringJoiner joiner = new StringJoiner(",");
+
+
+            // Sauvegarder chaque fichier et construire la chaîne des URLs
+            for (MultipartFile file : multipartFile) {
+                String urlPhoto = fileService.saveFile(file);
+                joiner.add(urlPhoto);  // Ajouter l'URL sauvegardée dans le joiner
+            }
+            List<String> imageUrls = Arrays.asList(joiner.toString().split(","));
+            productView.setImageUrls(imageUrls);
+
+            StringJoiner colorJoiner = new StringJoiner(",");
+            for(String colors : productView.getColors()){
+                colorJoiner.add(colors);
+            }
+            productView.setColors(Arrays.asList(colorJoiner.toString().split(",")));
+
+            StringJoiner sizeJoiner = new StringJoiner(",");
+            for(String size : productView.getSizes()){
+                sizeJoiner.add(size);
+            }
+            productView.setSizes(Arrays.asList(sizeJoiner.toString().split(",")));
+            ModelMapper modelMapper = new ModelMapper();
+            ProductView viewSaved = modelMapper.map(productView, ProductView.class);
+            productViewRepository.save(viewSaved);
+
+            return ProductViewsDto.toDto(viewSaved);
+        }
+
+        throw new NotFoundException("Ce produit n'existe pas");
+
     }
 }

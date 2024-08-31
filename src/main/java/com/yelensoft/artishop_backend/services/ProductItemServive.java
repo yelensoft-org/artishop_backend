@@ -102,7 +102,7 @@ public class ProductItemServive {
         Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(id_paymentMethod);
         if (user.isPresent() && productView.isPresent() && nbExemplaire >=1 && paymentMethod.isPresent()) {
             productOrder.setUserApp(user.get());
-            productOrder.setTotalAmount(productView.get().getProduct().getPrice() * nbExemplaire);
+            productOrder.setTotalAmount(productView.get().getProductId().getPrice() * nbExemplaire);
             productOrder.setNbProductItem(nbExemplaire);
             productOrder.setStatus(OrderStatus.IN_PROGRESS);
             productOrder.setAddress(address);
@@ -122,7 +122,7 @@ public class ProductItemServive {
         Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(id_paymentMethod);
         if (user.isPresent() && productView.isPresent() && nbExemplaire >=1 && paymentMethod.isPresent()) {
             productOrder.setUserApp(user.get());
-            productOrder.setTotalAmount(productView.get().getProduct().getPrice() * nbExemplaire);
+            productOrder.setTotalAmount(productView.get().getProductId().getPrice() * nbExemplaire);
             productOrder.setNbProductItem(nbExemplaire);
             productOrder.setStatus(OrderStatus.IN_PROGRESS);
             productOrder.setAddress(user.get().getAddress());

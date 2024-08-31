@@ -28,6 +28,6 @@ public class FileService {
         // Enregistrer le fichier sur le système de fichiers
         Files.copy(file.getInputStream(), filePath);
 
-        return filePath.toString();
+        return fileName;
     }
 }
