@@ -1,15 +1,12 @@
 package com.yelensoft.artishop_backend.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-
 import java.util.Date;
 
 @RestControllerAdvice
@@ -45,54 +42,50 @@ public class ExceptionControllerHandler {
 
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorMessage> handleBadRequestException(WebRequest webRequest, BadRequestException ex) {
-        ErrorMessage errorResponse = new ErrorMessage();
-        errorResponse.setTimestamp(new Date());
-        errorResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        errorResponse.setError(HttpStatus.BAD_REQUEST.getReasonPhrase());
-        errorResponse.setMessage(ex.getMessage());
-        errorResponse.setPath( webRequest.getDescription(false));
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    public ErrorMessage handleBadRequestException(WebRequest request, BadRequestException ex) {
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),          // Code de statut HTTP 404
+                new Date(),                            // Timestamp actuel
+                HttpStatus.BAD_REQUEST.getReasonPhrase(), // Message "Not Found"
+                ex.getMessage(),                       // Message de l'exception
+                request.getDescription(false)          // Chemin de la requête
+        );
     }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorMessage> handleNotFoundException(WebRequest webRequest, NotFoundException ex) {
-        ErrorMessage errorResponse = new ErrorMessage();
-        errorResponse.setTimestamp(new Date());
-        errorResponse.setStatusCode(HttpStatus.NOT_FOUND.value());
-        errorResponse.setError(HttpStatus.NOT_FOUND.getReasonPhrase());
-        errorResponse.setMessage(ex.getMessage());
-        errorResponse.setPath( webRequest.getDescription(false));
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    public ErrorMessage handleNotFoundException(NotFoundException ex, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.NOT_FOUND.value(),          // Code de statut HTTP 404
+                new Date(),                            // Timestamp actuel
+                HttpStatus.NOT_FOUND.getReasonPhrase(), // Message "Not Found"
+                ex.getMessage(),                       // Message de l'exception
+                request.getDescription(false)          // Chemin de la requête
+        );
     }
 
     @ExceptionHandler(ResourceExistException.class)
-    //@ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<ErrorMessage> handleResourceExistException(WebRequest webRequest, ResourceExistException ex) {
-        System.out.println("::: ResourceExistException :::");
-        ErrorMessage errorResponse = new ErrorMessage();
-        errorResponse.setTimestamp(new Date());
-        errorResponse.setStatusCode(HttpStatus.CONFLICT.value());
-        errorResponse.setError(HttpStatus.CONFLICT.getReasonPhrase());
-        errorResponse.setMessage(ex.getMessage());
-        errorResponse.setPath( webRequest.getDescription(false));
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
-        //return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorMessage handleResourceExistException(ResourceExistException ex, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.CONFLICT.value(),
+                new Date(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                ex.getMessage(),
+                request.getDescription(false)
+        );
     }
 
     @ExceptionHandler(InternalServerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<ErrorMessage> handleInternalServerException(WebRequest webRequest, InternalServerException ex) {
-        ErrorMessage errorResponse = new ErrorMessage();
-        errorResponse.setTimestamp(new Date());
-        errorResponse.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        errorResponse.setError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-        errorResponse.setMessage(ex.getMessage());
-        errorResponse.setPath( webRequest.getDescription(false));
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ErrorMessage handleInternalServerException(WebRequest request, InternalServerException ex) {
+        return new ErrorMessage(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),          // Code de statut HTTP 404
+                new Date(),                            // Timestamp actuel
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), // Message "Not Found"
+                ex.getMessage(),                       // Message de l'exception
+                request.getDescription(false)          // Chemin de la requête
+        );
     }
+
 }

@@ -2,7 +2,7 @@ package com.yelensoft.artishop_backend.controllers;
 
 import com.yelensoft.artishop_backend.configuration.ResponseHandler;
 import com.yelensoft.artishop_backend.entities.Customer;
-import com.yelensoft.artishop_backend.pojoClass.AuthPojo;
+import com.yelensoft.artishop_backend.pojos.AuthPojo;
 import com.yelensoft.artishop_backend.services.UsersService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

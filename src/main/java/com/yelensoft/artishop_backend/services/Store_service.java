@@ -1,9 +1,9 @@
-package com.yelensoft.artishop_backend.Service;
+package com.yelensoft.artishop_backend.services;
 
-import com.yelensoft.artishop_backend.Repository.Store_repository;
-import com.yelensoft.artishop_backend.Repository.Users_repository;
 import com.yelensoft.artishop_backend.entities.Store;
 import com.yelensoft.artishop_backend.entities.Customer;
+import com.yelensoft.artishop_backend.repositories.CustomerRepository;
+import com.yelensoft.artishop_backend.repositories.StoreRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,25 +14,26 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Slf4j
 @Service
 public class Store_service {
     @Autowired
-    private Store_repository store_repository;
+    private StoreRepository storeRepository;
 
     @Autowired
-    private Users_repository users_repository;
+    private CustomerRepository customerRepository;
 
     @Autowired
-    private  FileService fileService;
+    private FileService fileService;
 
 
     //    -----------------------------------------------------------------------------------------------
     //    methode pour creer une botique en fonction d'un artisan donner start
     public Store create(long id, Store store, MultipartFile multipartFile) throws Exception {
         try {
-            Customer artisantExist = users_repository.findUsersById(id);
+            Optional<Customer> artisantExist = customerRepository.findById(id);
             /*if (artisantExist == null || !artisantExist.getRole().equals(PersonRole.ARTISANT)) {
                 throw new RuntimeException("Utilisateur inexistant ou non autorisé.");
             }*/
@@ -45,12 +46,12 @@ public class Store_service {
             store.setImageUrl(fileUrl);
 //            store.setUpdateDate(LocalDate.now());
 
-            Store storeExist = store_repository.findByEmailAndName(store.getEmail(), store.getName());
+            Optional<Store> storeExist = storeRepository.findByEmailAndName(store.getEmail(), store.getName());
             if (storeExist != null) {
                 throw new RuntimeException("Le nom ou l'adresse e-mail de cette boutique existe déjà.");
             }
 
-            store_repository.save(store);
+            storeRepository.save(store);
             return store;
         } catch (RuntimeException e) {
             log.error("Runtime error: {}", e.getMessage(), e);
@@ -61,7 +62,7 @@ public class Store_service {
     //    ------------------------------------------------------------------------------------------------
 //    methode pour appeler tout les store(boutique)
     public List<Store> readStoreAll(){
-        List<Store> storeList = store_repository.findAll();
+        List<Store> storeList = storeRepository.findAll();
         if (storeList.isEmpty()){
             throw new RuntimeException("Il exist auccune boutique");
         }else {
@@ -71,17 +72,17 @@ public class Store_service {
 //----------------------------------------------------------------------------------------------
 //    mehode pour appeler une store(boutique) en fonction du nom de la boutique
     public Store readStore(String nomStore){
-        return store_repository.findStoreByName(nomStore);
+        return storeRepository.findByName(nomStore).orElse(new Store());
 
     }
 //    ______________________________________________________________________________________________
 
 //  desactiver une boutique
     public String desableStore(Long id){
-        Store storeExist = store_repository.findStoreById(id);
-        if (storeExist !=null){
-            storeExist.setDeleted(!storeExist.isDeleted());
-            store_repository.save(storeExist);
+        Optional<Store> storeExist = storeRepository.findById(id);
+        if (storeExist.isPresent()){
+            storeExist.get().setDeleted(!storeExist.get().isDeleted());
+            storeRepository.save(storeExist.get());
 
         }
         return "Disable successffly!";
@@ -91,14 +92,14 @@ public class Store_service {
 
 //    mehode pour permettre a un user de voter
     public double likeStore(int starVote, Long idStore) {
-        Store storeExist = store_repository.findStoreById(idStore);
+        Optional<Store> storeExist = storeRepository.findById(idStore);
 
-        if (storeExist != null) {
-            double totalVote = storeExist.getTotalValueVote() + starVote;
-            double nbreVote = storeExist.getNbreVote() + 1;
+        if (storeExist.isPresent()) {
+            double totalVote = storeExist.get().getTotalValueVote() + starVote;
+            double nbreVote = storeExist.get().getNbreVote() + 1;
 
-            storeExist.setNbreVote(nbreVote);
-            storeExist.setTotalValueVote(totalVote);
+            storeExist.get().setNbreVote(nbreVote);
+            storeExist.get().setTotalValueVote(totalVote);
 
             if (nbreVote > 0) {
                 double averageVote =  totalVote / nbreVote; // Calculez la moyenne
@@ -106,8 +107,8 @@ public class Store_service {
                 // Arrondissez à un chiffre après la virgule
                 averageVote = Math.round(averageVote * 10.0) / 10.0;
 
-                storeExist.setNbreStar(averageVote);
-                store_repository.save(storeExist);
+                storeExist.get().setNbreStar(averageVote);
+                storeRepository.save(storeExist.get());
                 return averageVote;
 
             } else {
@@ -122,7 +123,7 @@ public class Store_service {
 //    methode pour modifier les information d'un store(boutique)
     public Store update(Long idStore, Store updatedStoreDetails, MultipartFile multipartFile) {
         // Recherche du magasin existant par son ID
-        Store existingStore = store_repository.findById(idStore)
+        Store existingStore = storeRepository.findById(idStore)
                 .orElseThrow(() -> new NoSuchElementException("Le magasin avec l'ID " + idStore + " n'existe pas."));
 
         // Mise à jour des détails du magasin
@@ -148,7 +149,7 @@ public class Store_service {
         }
 
         // Enregistrement des changements dans la base de données
-        return store_repository.save(existingStore);
+        return storeRepository.save(existingStore);
     }
 
 //-----------------------------------------------------------------------------------------------------

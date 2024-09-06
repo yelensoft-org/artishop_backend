@@ -1,9 +1,9 @@
-package com.yelensoft.artishop_backend.dto;
+package com.yelensoft.artishop_backend.pojos;
 
 import lombok.Data;
 
 @Data
-public class CreateCustomerDto {
+public class CreateCustomerPojo {
     private String fullName;
     private String numTel;
     private String password;

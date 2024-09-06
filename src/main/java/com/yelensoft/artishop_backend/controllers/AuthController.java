@@ -1,7 +1,7 @@
 package com.yelensoft.artishop_backend.controllers;
 
-import com.yelensoft.artishop_backend.dto.AuthDTO;
-import com.yelensoft.artishop_backend.dto.CreateCustomerDto;
+import com.yelensoft.artishop_backend.pojos.AuthPojo;
+import com.yelensoft.artishop_backend.pojos.CreateCustomerPojo;
 import com.yelensoft.artishop_backend.resources.URIs;
 import com.yelensoft.artishop_backend.services.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,14 +19,14 @@ public class AuthController {
 
     @PostMapping(URIs.LOGIN_URI)
     @Operation(summary = "Connection du client à son compte")
-    public ResponseEntity<?> loginCustomer(@RequestBody AuthDTO authDTO) {
-        return authService.loginCustomer(authDTO);
+    public ResponseEntity<?> loginCustomer(@RequestBody AuthPojo authPojo) {
+        return authService.loginCustomer(authPojo);
     }
 
     @PostMapping(URIs.CREATE_CUSTOMER_URI)
     @Operation(summary = "Inscription d'un nouveau client")
-    public ResponseEntity<?> createCustomer(@RequestBody CreateCustomerDto createCustomerDto) {
-        return authService.createCustomer(createCustomerDto);
+    public ResponseEntity<?> createCustomer(@RequestBody CreateCustomerPojo createCustomerPojo) {
+        return authService.createCustomer(createCustomerPojo);
     }
 
     @GetMapping(URIs.REFRESH_TOKEN_URI)

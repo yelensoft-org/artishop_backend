@@ -3,7 +3,7 @@ package com.yelensoft.artishop_backend.services;
 import com.yelensoft.artishop_backend.exceptions.NotAuthorizedException;
 import com.yelensoft.artishop_backend.entities.Cart;
 import com.yelensoft.artishop_backend.entities.Customer;
-import com.yelensoft.artishop_backend.pojoClass.AuthPojo;
+import com.yelensoft.artishop_backend.pojos.AuthPojo;
 import com.yelensoft.artishop_backend.repositories.CartRepository;
 import com.yelensoft.artishop_backend.repositories.CustomerRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -41,7 +41,7 @@ public class UsersService {
     }
 
     public Customer connectUsers(AuthPojo authPojo){
-        Optional<Customer> customerOptional = customerRepository.findByEmail(authPojo.getEmail());
+        Optional<Customer> customerOptional = customerRepository.findByEmail(authPojo.getNumTel());
         if (customerOptional .isEmpty()) throw new EntityNotFoundException("invalid user");
         if (!passwordEncoder.matches(authPojo.getPassword(), customerOptional.get().getPassword())) throw new EntityNotFoundException("invalid password");
         if (customerOptional.get().isDeleted()) throw new NotAuthorizedException("denied");

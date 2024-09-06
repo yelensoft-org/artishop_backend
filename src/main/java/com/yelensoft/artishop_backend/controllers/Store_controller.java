@@ -1,7 +1,7 @@
-package com.yelensoft.artishop_backend.Controller;
+package com.yelensoft.artishop_backend.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yelensoft.artishop_backend.Service.Store_service;
+import com.yelensoft.artishop_backend.services.Store_service;
 import com.yelensoft.artishop_backend.entities.Store;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

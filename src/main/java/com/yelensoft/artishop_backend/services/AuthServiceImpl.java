@@ -1,9 +1,9 @@
 package com.yelensoft.artishop_backend.services;
 
 import com.yelensoft.artishop_backend.configuration.ResponseHandler;
-import com.yelensoft.artishop_backend.dto.AuthDTO;
-import com.yelensoft.artishop_backend.dto.CreateCustomerDto;
-import com.yelensoft.artishop_backend.dto.JwtResponseDTO;
+import com.yelensoft.artishop_backend.pojos.AuthPojo;
+import com.yelensoft.artishop_backend.pojos.CreateCustomerPojo;
+import com.yelensoft.artishop_backend.dto.JwtResponseDto;
 import com.yelensoft.artishop_backend.entities.Customer;
 import com.yelensoft.artishop_backend.enums.PersonGender;
 import com.yelensoft.artishop_backend.enums.RoleName;
@@ -29,7 +29,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
@@ -44,15 +43,15 @@ public class AuthServiceImpl implements AuthService {
     private Mapper mapper;
     private UserRoleRepository userRoleRepository;
     @Override
-    public ResponseEntity<?> createCustomer(CreateCustomerDto createCustomerDto) {
-        Optional<Customer> customerOptional = customerRepository.findByNumTel(createCustomerDto.getNumTel());
+    public ResponseEntity<?> createCustomer(CreateCustomerPojo createCustomerPojo) {
+        Optional<Customer> customerOptional = customerRepository.findByNumTel(createCustomerPojo.getNumTel());
         if(customerOptional.isPresent()) throw new ResourceExistException("Un utilisateur avec le même numéro existe déjà");
         else {
             try {
                 Customer customer = Customer.builder()
-                        .fullName(createCustomerDto.getFullName())
-                        .numTel(createCustomerDto.getNumTel())
-                        .password(passwordEncoder.encode(createCustomerDto.getPassword()))
+                        .fullName(createCustomerPojo.getFullName())
+                        .numTel(createCustomerPojo.getNumTel())
+                        .password(passwordEncoder.encode(createCustomerPojo.getPassword()))
                         .roles(Set.of(userRoleRepository.findByName(RoleName.CUSTOMER.name())
                                 .orElseThrow(() -> new NotFoundException(ErrorMessageValue.ROLE_NOT_FOUND))))
                         .creationDate(new Date())
@@ -70,12 +69,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<?> loginCustomer(AuthDTO authRequestDTO) {
+    public ResponseEntity<?> loginCustomer(AuthPojo authRequestDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequestDTO.getNumTel(),
                         authRequestDTO.getPassword()));
         if(authentication.isAuthenticated()){
-            JwtResponseDTO body = JwtResponseDTO.builder()
+            JwtResponseDto body = JwtResponseDto.builder()
                     .accessToken(jwtService.generateToken(authRequestDTO.getNumTel()))
                     .refreshToken(jwtService.generateRefreshToken(authRequestDTO.getNumTel()))
                     .build();
@@ -91,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
         if(authHeader != null && authHeader.startsWith(ConstanteValues.BEARER)) {
             String refreshToken = authHeader.substring(ConstanteValues.BEARER_TEXT_LENGTH);
             String username = jwtService.extractNumTel(refreshToken);
-            return ResponseHandler.generateResponse("Creation d'un nouveau access token", HttpStatus.OK, JwtResponseDTO.builder()
+            return ResponseHandler.generateResponse("Creation d'un nouveau access token", HttpStatus.OK, JwtResponseDto.builder()
                     .accessToken(jwtService.generateToken(username)).refreshToken(refreshToken).build());
             /*return ResponseEntity.ok(ResponseMessage.builder()
                     .body(JwtResponseDTO.builder()

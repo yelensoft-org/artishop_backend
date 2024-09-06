@@ -1,4 +1,4 @@
-package com.yelensoft.artishop_backend.Service;
+package com.yelensoft.artishop_backend.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,13 +1,14 @@
 package com.yelensoft.artishop_backend.services;
 
-import com.yelensoft.artishop_backend.configuration.ApiSuccessResponse;
-import com.yelensoft.artishop_backend.configuration.NotFoundException;
+import com.yelensoft.artishop_backend.configuration.ResponseHandler;
 import com.yelensoft.artishop_backend.entities.*;
+import com.yelensoft.artishop_backend.exceptions.NotFoundException;
 import com.yelensoft.artishop_backend.repositories.CartRepository;
 import com.yelensoft.artishop_backend.repositories.PaymentMethodRepository;
 import com.yelensoft.artishop_backend.repositories.ProductItemRepository;
 import com.yelensoft.artishop_backend.repositories.ProductOrderRepository;
 import com.yelensoft.artishop_backend.repositories.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -158,7 +159,7 @@ public class ProductOrderService {
             productOrderRepository.save(pOrder);
         }
 
-        return ApiSuccessResponse.successResponse("Commande effectuée avec succès!");
+        return ResponseHandler.generateResponse("Commande effectuée avec succès!", HttpStatus.CREATED, null);
     }
 
         private void validateProductOrder(ProductOrder pOrder) {
