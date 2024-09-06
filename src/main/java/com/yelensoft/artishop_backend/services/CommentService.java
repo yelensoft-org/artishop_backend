@@ -2,7 +2,7 @@ package com.yelensoft.artishop_backend.services;
 import com.yelensoft.artishop_backend.entities.Comment;
 import com.yelensoft.artishop_backend.entities.Product;
 import com.yelensoft.artishop_backend.entities.Store;
-import com.yelensoft.artishop_backend.entities.UserApp;
+import com.yelensoft.artishop_backend.entities.Customer;
 import com.yelensoft.artishop_backend.repositories.CommentRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +25,9 @@ public class CommentService {
     private ProductService productService;
 
     public Object addComment(@Valid Comment comment, Long userId, Long storeId, Long productId) {
-        UserApp user = userService.getUserById(userId);
+        Customer user = userService.getUserById(userId);
         if (user != null) {
-            comment.setUserApp(user);
+            comment.setCustomer(user);
         } else {
             throw new RuntimeException("User with id " + userId + " does not exist");
         }
@@ -70,7 +70,7 @@ public class CommentService {
     }
 
     public List<Comment> getCommentsByUser(Long userId) {
-        return commentRepository.findByUserAppId(userId);
+        return commentRepository.findByCustomerId(userId);
     }
 
     public Comment updateComment(Long id, Comment comment) {
@@ -79,7 +79,7 @@ public class CommentService {
             existingComment.setText(comment.getText());
             existingComment.setStore(comment.getStore());
             existingComment.setProduct(comment.getProduct());
-            existingComment.setUserApp(comment.getUserApp());
+            existingComment.setCustomer(comment.getCustomer());
             return commentRepository.save(existingComment);
         } else {
             throw new RuntimeException("Comment with id " + id + " does not exist");

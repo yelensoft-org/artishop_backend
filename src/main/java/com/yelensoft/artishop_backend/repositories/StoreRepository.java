@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
-    Optional<Store> findByUserAppId(Long artisanId);
+    Optional<Store> findByCustomerId(Long artisanId);
 
-    Optional<Store> findByIdAndUserAppId(Long storeId, Long userId);
+    Optional<Store> findByIdAndCustomerId(Long storeId, Long userId);
 }

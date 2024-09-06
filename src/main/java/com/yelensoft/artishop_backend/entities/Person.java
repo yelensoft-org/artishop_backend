@@ -1,17 +1,21 @@
 package com.yelensoft.artishop_backend.entities;
 
-import com.yelensoft.artishop_backend.enumClass.PersonGender;
-import com.yelensoft.artishop_backend.enumClass.PersonRole;
+import com.yelensoft.artishop_backend.enums.PersonGender;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class Person {
 
     @Id
@@ -43,9 +47,6 @@ public abstract class Person {
 
     @Enumerated(EnumType.STRING)
     protected PersonGender gender;
-
-    @Enumerated(EnumType.STRING)
-    protected PersonRole role;
 
     @OneToOne
     protected Address address;

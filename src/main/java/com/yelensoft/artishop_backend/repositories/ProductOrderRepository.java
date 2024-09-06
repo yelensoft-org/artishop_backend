@@ -4,19 +4,17 @@ import com.yelensoft.artishop_backend.entities.ProductOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ProductOrderRepository extends JpaRepository<ProductOrder, Long> {
-    Optional<ProductOrder> findByIdAndUserAppId(Long id, Long id_user);
+    Optional<ProductOrder> findByIdAndCustomerId(Long id, Long customerId);
 
-    void deleteByIdAndUserAppId(Long id, Long id_user);
+    void deleteByIdAndCustomerId(Long id, Long customerId);
 
-    ProductOrder getByIdAndUserAppId(Long id, Long id_user);
+    ProductOrder getByIdAndCustomerId(Long id, Long customerId);
 
-    List<ProductOrder> findByUserAppIdAndCreationDateBetween(Long userApp_id, LocalDateTime start, LocalDateTime end);
+    List<ProductOrder> findByCustomerIdAndCreationDateBetween(Long customerId, LocalDateTime start, LocalDateTime end);
 }

@@ -30,7 +30,7 @@ public class ProductViewService {
                                                       ProductView productView) {
         try {
             Optional<Product> productOptional = productRepository
-                    .findByIdAndStoreIdAndStoreUserAppIdAndDeletedFalse(productId, storeId, userId);
+                    .findByIdAndStoreIdAndStoreCustomerIdAndDeletedFalse(productId, storeId, userId);
             if(productOptional.isPresent()) {
                 Product product = productOptional.get();
                 int sum = product.getProductViews().stream().map(ProductView::getNbAvailable)
@@ -60,7 +60,7 @@ public class ProductViewService {
                                                          Map<String, Object> updateDataMap) {
         try {
             Optional<ProductView> productViewOptional = productViewRepository
-                    .findByIdAndProductIdAndProductStoreIdAndProductStoreUserAppId(
+                    .findByIdAndProductIdAndProductStoreIdAndProductStoreCustomerId(
                             productViewId, productId, storeId, userId
                     );
             if(productViewOptional.isPresent()){
@@ -89,7 +89,7 @@ public class ProductViewService {
                                                      Long productViewId) {
         try {
             Optional<ProductView> productViewOptional = productViewRepository
-                    .findByIdAndProductIdAndProductStoreIdAndProductStoreUserAppId(
+                    .findByIdAndProductIdAndProductStoreIdAndProductStoreCustomerId(
                             productViewId, productId, storeId, userId
                     );
             if (productViewOptional.isPresent()){

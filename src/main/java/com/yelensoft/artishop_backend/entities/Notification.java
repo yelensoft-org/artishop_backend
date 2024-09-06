@@ -1,6 +1,6 @@
 package com.yelensoft.artishop_backend.entities;
 
-import com.yelensoft.artishop_backend.enumClass.NotificationType;
+import com.yelensoft.artishop_backend.enums.NotificationType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -29,7 +29,7 @@ public class Notification {
     private boolean deleted = false;
 
     @ManyToOne
-    private UserApp userApp;
+    private Customer customer;
 
 
 }

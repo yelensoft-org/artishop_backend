@@ -11,7 +11,7 @@ public class Follow {
     @GeneratedValue
     private Long id;
     @ManyToOne
-    private UserApp userApp;
+    private Customer customer;
     @ManyToOne
     private Store store;
 }

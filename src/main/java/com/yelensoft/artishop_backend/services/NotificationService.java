@@ -34,7 +34,7 @@ public class NotificationService {
             notification.setContent(notificationDetails.getContent());
             notification.setType(notificationDetails.getType());
             notification.setDeleted(notificationDetails.isDeleted());
-            notification.setUserApp(notificationDetails.getUserApp());
+            notification.setCustomer(notificationDetails.getCustomer());
             return notificationRepository.save(notification);
         } else {
             return null;

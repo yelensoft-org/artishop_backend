@@ -3,7 +3,7 @@ package com.yelensoft.artishop_backend.services;
 import com.yelensoft.artishop_backend.configuration.ResponseHandler;
 import com.yelensoft.artishop_backend.dto.AddProductDto;
 import com.yelensoft.artishop_backend.dto.ProductPresentationDto;
-import com.yelensoft.artishop_backend.entities.UserApp;
+import com.yelensoft.artishop_backend.entities.Customer;
 import com.yelensoft.artishop_backend.exceptions.BadRequestException;
 import com.yelensoft.artishop_backend.exceptions.NotFoundException;
 import com.yelensoft.artishop_backend.entities.Product;
@@ -11,7 +11,7 @@ import com.yelensoft.artishop_backend.entities.Store;
 import com.yelensoft.artishop_backend.repositories.CategoryRepository;
 import com.yelensoft.artishop_backend.repositories.ProductRepository;
 import com.yelensoft.artishop_backend.repositories.StoreRepository;
-import com.yelensoft.artishop_backend.repositories.UsersRepository;
+import com.yelensoft.artishop_backend.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +34,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
-    private final UsersRepository usersRepository;
+    private final CustomerRepository customerRepository;
     public static int MAX_LIMIT = 20;
 
     /*public ProductService(ProductRepository productRepository, StoreRepository storeRepository, CategoryRepository categoryRepository) {
@@ -57,7 +57,7 @@ public class ProductService {
 
     public ResponseEntity<Product> addProduct(Long userId, Long storeId, AddProductDto request){
         try {
-            Optional<Store> optionalStore = storeRepository.findByIdAndUserAppId(storeId, userId);
+            Optional<Store> optionalStore = storeRepository.findByIdAndCustomerId(storeId, userId);
             if (optionalStore.isPresent()) {
                 Product product = request.getProduct();
                 product.setCategories(categoryRepository.findAllById(request.getIdsCategories()));
@@ -84,7 +84,7 @@ public class ProductService {
 
     public ResponseEntity<Product> updateProduct(Long userId, Long storeId, Long productId, Map<String, Object> updateDataMap) {
         try {
-            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreUserAppIdAndDeletedFalse(productId, storeId, userId);
+            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreCustomerIdAndDeletedFalse(productId, storeId, userId);
             if(productOptional.isPresent()){
                 Product productUpdate = productOptional.get();
 
@@ -109,7 +109,7 @@ public class ProductService {
     public ResponseEntity<Boolean> deleteProduct(Long userId, Long storeId, Long productId) {
         try {
             Optional<Product> productOptional = productRepository
-                    .findByIdAndStoreIdAndStoreUserAppIdAndDeletedFalse(productId, storeId, userId);
+                    .findByIdAndStoreIdAndStoreCustomerIdAndDeletedFalse(productId, storeId, userId);
             if (productOptional.isPresent()){
                 Product productUpdate = productOptional.get();
                 productUpdate.setDeleted(true);
@@ -130,7 +130,7 @@ public class ProductService {
 
     public ResponseEntity<?> getAllProductPerPage(Long idUser, int page, int size){
         try {
-            UserApp userApp = usersRepository.findById(idUser).orElseThrow(()-> new NotFoundException("utilisateur invalide"));
+            Customer customer = customerRepository.findById(idUser).orElseThrow(()-> new NotFoundException("utilisateur invalide"));
             Pageable pageable = PageRequest.of(page, size);
             Page<Product> productPage = productRepository.findAll(pageable);
             List<Product> productList = productPage.getContent();
@@ -140,8 +140,8 @@ public class ProductService {
                                 product.getId(),
                                 product.getName(),
                                 product.getPrice(),
-                                product.getProductViews().getFirst().getImageUrls(),
-                                userApp.getCart().getProductItems().stream().anyMatch(productItem ->
+                                product.getProductViews().get(0).getImageUrls(),
+                                customer.getCart().getProductItems().stream().anyMatch(productItem ->
                                         productItem.getProductView().getProduct().getId() == product.getId())
                                 );
                     }

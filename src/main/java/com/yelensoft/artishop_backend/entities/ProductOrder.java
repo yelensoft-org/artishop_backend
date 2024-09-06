@@ -1,10 +1,9 @@
 package com.yelensoft.artishop_backend.entities;
 
-import com.yelensoft.artishop_backend.enumClass.OrderStatus;
+import com.yelensoft.artishop_backend.enums.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -36,7 +35,7 @@ public class ProductOrder {
     private boolean deleted = false;
 
     @ManyToOne
-    private UserApp userApp;
+    private Customer customer;
 
     @ManyToOne
     private Address address;

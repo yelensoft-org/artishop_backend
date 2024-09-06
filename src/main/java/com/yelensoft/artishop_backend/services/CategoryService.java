@@ -1,6 +1,6 @@
 package com.yelensoft.artishop_backend.services;
 
-import com.yelensoft.artishop_backend.enumClass.SizeType;
+import com.yelensoft.artishop_backend.enums.SizeType;
 import com.yelensoft.artishop_backend.exceptions.BadRequestException;
 import com.yelensoft.artishop_backend.exceptions.NotFoundException;
 import com.yelensoft.artishop_backend.entities.Category;
@@ -38,7 +38,7 @@ public class CategoryService {
     public ResponseEntity<String> addCategoryToProduct(Long userId, Long storeId, Long productId,
                                                        Map<String, List<Long>> categoryIds) {
         try {
-            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreUserAppIdAndDeletedFalse(
+            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreCustomerIdAndDeletedFalse(
                     productId, storeId, userId
             );
             if (productOptional.isPresent()) {
@@ -65,7 +65,7 @@ public class CategoryService {
     public ResponseEntity<String> deleteCategoryFromProduct(Long userId, Long storeId, Long productId,
                                                             Long categoryId) {
         try {
-            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreUserAppIdAndDeletedFalse(
+            Optional<Product> productOptional = productRepository.findByIdAndStoreIdAndStoreCustomerIdAndDeletedFalse(
                     productId, storeId, userId
             );
             if (productOptional.isPresent()) {

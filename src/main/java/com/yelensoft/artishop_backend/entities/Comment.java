@@ -23,7 +23,7 @@ public class Comment {
     private boolean deleted = false;
 
     @ManyToOne
-    private UserApp userApp;
+    private Customer customer;
 
     @ManyToOne
     private Store store;
@@ -43,8 +43,8 @@ public class Comment {
         this.product = product;
     }
 
-    public void setUserApp(UserApp userApp) {
-        this.userApp = userApp;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public String getText() {

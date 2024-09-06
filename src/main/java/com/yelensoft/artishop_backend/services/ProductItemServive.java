@@ -6,26 +6,26 @@ import java.util.Optional;
 
 import com.yelensoft.artishop_backend.entities.*;
 import com.yelensoft.artishop_backend.repositories.*;
-import com.yelensoft.artishop_backend.repositories.UsersRepository;
+import com.yelensoft.artishop_backend.repositories.CustomerRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.yelensoft.artishop_backend.enumClass.OrderStatus;
+import com.yelensoft.artishop_backend.enums.OrderStatus;
 
 @Service
 public class ProductItemServive {
     private final ProductItemRepository productItemRepository;
     private final ProductOrderRepository productOrderRepository;
     private final ProductViewRepository productViewRepository;
-    private final UsersRepository usersRepository;
+    private final CustomerRepository customerRepository;
     private final PaymentMethodRepository paymentMethodRepository;
     private final CartRepository cartRepository;
 
-    ProductItemServive(ProductItemRepository ItemRepository,CartRepository cRepository,PaymentMethodRepository pRepository ,UsersRepository uRepository, ProductViewRepository ViewRepository, ProductOrderRepository OrderRepository) {
+    ProductItemServive(ProductItemRepository ItemRepository, CartRepository cRepository, PaymentMethodRepository pRepository , CustomerRepository uRepository, ProductViewRepository ViewRepository, ProductOrderRepository OrderRepository) {
         this.productItemRepository = ItemRepository;
         this.productViewRepository = ViewRepository;
         this.productOrderRepository = OrderRepository;
-        this.usersRepository = uRepository;
+        this.customerRepository = uRepository;
         this.paymentMethodRepository = pRepository;
         this.cartRepository = cRepository;
     }
@@ -46,7 +46,7 @@ public class ProductItemServive {
     }
 
     public ResponseEntity<ProductItem> readProductItem(Long id,Long id_user) {
-        Optional<UserApp> user =   usersRepository.findById(id_user);
+        Optional<Customer> user =   customerRepository.findById(id_user);
         Optional<ProductItem> productItem = productItemRepository.findById(id);
         if (user.isPresent() && productItem.isPresent() && user.get().getCart().getId() == productItem.get().getCart().getId()){
             return ResponseEntity.ok(productItemRepository.findById(id).get());
@@ -60,7 +60,7 @@ public class ProductItemServive {
     }
 
     public ResponseEntity<ProductItem> updateProductItem(Long Id, Long id_user, int Nbexemplaire) {
-        Optional<UserApp> user =   usersRepository.findById(id_user);
+        Optional<Customer> user =   customerRepository.findById(id_user);
         Optional<ProductItem> optionalProductItem = productItemRepository.findById(Id);
         if (user.isPresent() && optionalProductItem.isPresent() && user.get().getCart().getId() == optionalProductItem.get().getCart().getId()){
             ProductItem existingProductItem = optionalProductItem.get();
@@ -76,7 +76,7 @@ public class ProductItemServive {
     }
 
     public ResponseEntity<String> deleteProductItem(Long id,Long id_user) {
-        Optional<UserApp> user =   usersRepository.findById(id_user);
+        Optional<Customer> user =   customerRepository.findById(id_user);
         Optional<ProductItem> productItem = productItemRepository.findById(id);
         if (user.isPresent() && productItem.isPresent() && user.get().getCart().getId() == productItem.get().getCart().getId()){
             productItemRepository.deleteById(id);
@@ -87,7 +87,7 @@ public class ProductItemServive {
     }
 
     public ResponseEntity<List<ProductItem>> listallitem(Long id_user) {
-        Optional<UserApp> user = usersRepository.findById(id_user);
+        Optional<Customer> user = customerRepository.findById(id_user);
         if (!user.isPresent() && user.get().getCart()==null) {
             return ResponseEntity.ok(null);
         }
@@ -97,11 +97,11 @@ public class ProductItemServive {
     public ResponseEntity<ProductOrder> ordering(int nbExemplaire, Long id_productView, Long id_user, Long id_paymentMethod, Address address) {
         ProductOrder productOrder = new ProductOrder();
 
-        Optional<UserApp> user = usersRepository.findById(id_user);
+        Optional<Customer> user = customerRepository.findById(id_user);
         Optional<ProductView> productView = productViewRepository.findById(id_productView);
         Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(id_paymentMethod);
         if (user.isPresent() && productView.isPresent() && nbExemplaire >=1 && paymentMethod.isPresent()) {
-            productOrder.setUserApp(user.get());
+            productOrder.setCustomer(user.get());
             productOrder.setTotalAmount(productView.get().getProduct().getPrice() * nbExemplaire);
             productOrder.setNbProductItem(nbExemplaire);
             productOrder.setStatus(OrderStatus.IN_PROGRESS);
@@ -117,11 +117,11 @@ public class ProductItemServive {
     public ResponseEntity<ProductOrder> ordering2(int nbExemplaire, Long id_productView, Long id_user, Long id_paymentMethod) {
         ProductOrder productOrder = new ProductOrder();
 
-        Optional<UserApp> user = usersRepository.findById(id_user);
+        Optional<Customer> user = customerRepository.findById(id_user);
         Optional<ProductView> productView = productViewRepository.findById(id_productView);
         Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(id_paymentMethod);
         if (user.isPresent() && productView.isPresent() && nbExemplaire >=1 && paymentMethod.isPresent()) {
-            productOrder.setUserApp(user.get());
+            productOrder.setCustomer(user.get());
             productOrder.setTotalAmount(productView.get().getProduct().getPrice() * nbExemplaire);
             productOrder.setNbProductItem(nbExemplaire);
             productOrder.setStatus(OrderStatus.IN_PROGRESS);
@@ -138,7 +138,7 @@ public class ProductItemServive {
     public ResponseEntity<ProductItem> addtoCart(Long id_user, Long id_productView, int nbExemplaire) {
         ProductItem productItem = new ProductItem();
         Optional<ProductView> productView = productViewRepository.findById(id_productView);
-        Optional<UserApp> user = usersRepository.findById(id_user);
+        Optional<Customer> user = customerRepository.findById(id_user);
         if (productView.isPresent() && nbExemplaire >= 1 && user.isPresent() && user.get().getCart()!=null) {
             for (ProductItem item :  user.get().getCart().getProductItems() ) {
                 //ici si lítem a ajoute existe deja on modifie juste le nmbre exemplaire pour pas avoir des doublons dans notre panier

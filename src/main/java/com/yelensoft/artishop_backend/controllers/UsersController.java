@@ -1,7 +1,7 @@
 package com.yelensoft.artishop_backend.controllers;
 
 import com.yelensoft.artishop_backend.configuration.ResponseHandler;
-import com.yelensoft.artishop_backend.entities.UserApp;
+import com.yelensoft.artishop_backend.entities.Customer;
 import com.yelensoft.artishop_backend.pojoClass.AuthPojo;
 import com.yelensoft.artishop_backend.services.UsersService;
 import jakarta.validation.Valid;
@@ -18,8 +18,8 @@ public class UsersController {
     private UsersService usersService;
 
     @PostMapping("/add")
-    public ResponseEntity<Object> addUsers(@Valid @RequestBody UserApp userApp){
-        return ResponseHandler.generateResponse("success", HttpStatus.OK,usersService.addUsers(userApp));
+    public ResponseEntity<Object> addUsers(@Valid @RequestBody Customer customer){
+        return ResponseHandler.generateResponse("success", HttpStatus.OK,usersService.addUsers(customer));
     }
 
     @GetMapping("/connect")
@@ -28,8 +28,8 @@ public class UsersController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Object> updateUser(@Valid @RequestBody UserApp userApp){
-        return ResponseHandler.generateResponse("success", HttpStatus.OK, usersService.updateUser(userApp));
+    public ResponseEntity<Object> updateUser(@Valid @RequestBody Customer customer){
+        return ResponseHandler.generateResponse("success", HttpStatus.OK, usersService.updateUser(customer));
     }
 
     @DeleteMapping("/delete/{id}")

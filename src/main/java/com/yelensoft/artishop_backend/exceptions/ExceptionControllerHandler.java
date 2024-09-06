@@ -43,8 +43,6 @@ public class ExceptionControllerHandler {
         );
     }
 
-
-
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorMessage> handleBadRequestException(WebRequest webRequest, BadRequestException ex) {
@@ -72,8 +70,9 @@ public class ExceptionControllerHandler {
     }
 
     @ExceptionHandler(ResourceExistException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    //@ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<ErrorMessage> handleResourceExistException(WebRequest webRequest, ResourceExistException ex) {
+        System.out.println("::: ResourceExistException :::");
         ErrorMessage errorResponse = new ErrorMessage();
         errorResponse.setTimestamp(new Date());
         errorResponse.setStatusCode(HttpStatus.CONFLICT.value());
@@ -81,7 +80,8 @@ public class ExceptionControllerHandler {
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setPath( webRequest.getDescription(false));
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        //return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(InternalServerException.class)
@@ -93,20 +93,6 @@ public class ExceptionControllerHandler {
         errorResponse.setError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setPath( webRequest.getDescription(false));
-
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    /*@ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorMessage handleGlobException(WebRequest webRequest, InternalServerException ex) {
-        return new ErrorMessage(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                new Date(),
-                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                ex.getMessage(),
-                webRequest.getDescription(false)
-        );
-    }*/
-
 }

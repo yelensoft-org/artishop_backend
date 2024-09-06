@@ -3,15 +3,13 @@ package com.yelensoft.artishop_backend.Service;
 import com.yelensoft.artishop_backend.Repository.Store_repository;
 import com.yelensoft.artishop_backend.Repository.Users_repository;
 import com.yelensoft.artishop_backend.entities.Store;
-import com.yelensoft.artishop_backend.entities.UserApp;
-import com.yelensoft.artishop_backend.enumClass.PersonRole;
+import com.yelensoft.artishop_backend.entities.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
@@ -34,10 +32,10 @@ public class Store_service {
     //    methode pour creer une botique en fonction d'un artisan donner start
     public Store create(long id, Store store, MultipartFile multipartFile) throws Exception {
         try {
-            UserApp artisantExist = users_repository.findUsersById(id);
-            if (artisantExist == null || !artisantExist.getRole().equals(PersonRole.ARTISANT)) {
+            Customer artisantExist = users_repository.findUsersById(id);
+            /*if (artisantExist == null || !artisantExist.getRole().equals(PersonRole.ARTISANT)) {
                 throw new RuntimeException("Utilisateur inexistant ou non autorisé.");
-            }
+            }*/
 
             String filePath = fileService.saveFile(multipartFile);
             // Convertir le chemin de fichier en URL

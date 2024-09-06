@@ -2,11 +2,10 @@ package com.yelensoft.artishop_backend.services;
 
 import com.yelensoft.artishop_backend.exceptions.NotAuthorizedException;
 import com.yelensoft.artishop_backend.entities.Cart;
-import com.yelensoft.artishop_backend.entities.UserApp;
+import com.yelensoft.artishop_backend.entities.Customer;
 import com.yelensoft.artishop_backend.pojoClass.AuthPojo;
 import com.yelensoft.artishop_backend.repositories.CartRepository;
-import com.yelensoft.artishop_backend.repositories.UsersRepository;
-import jakarta.persistence.EntityExistsException;
+import com.yelensoft.artishop_backend.repositories.CustomerRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +17,7 @@ import java.util.Optional;
 public class UsersService {
 
     @Autowired
-    private UsersRepository usersRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -29,42 +28,42 @@ public class UsersService {
     @Autowired
     private CartRepository cartRepository;
 
-    public UserApp addUsers(UserApp userApp){
+    public Customer addUsers(Customer customer){
 
-        UserApp userAppVerif = usersRepository.findByEmail(userApp.getEmail());
-        if (userAppVerif != null) throw new NotAuthorizedException("Cet utilisateur existe déjà");
-        userApp.setAddress(addressService.addAddress(userApp.getAddress()));
+        Optional<Customer> customerOptional = customerRepository.findByEmail(customer.getEmail());
+        if (customerOptional.isEmpty()) throw new NotAuthorizedException("Cet utilisateur existe déjà");
+        customer.setAddress(addressService.addAddress(customer.getAddress()));
         Cart cart = cartRepository.save(new Cart());
-        userApp.setCart(cart);
-        userApp.setPassword(passwordEncoder.encode(userApp.getPassword()));
-        return usersRepository.save(userApp);
+        customer.setCart(cart);
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        return customerRepository.save(customer);
 
     }
 
-    public UserApp connectUsers(AuthPojo authPojo){
-        UserApp userAppVerif = usersRepository.findByEmail(authPojo.getEmail());
-        if (userAppVerif == null) throw new EntityNotFoundException("invalid user");
-        if (!passwordEncoder.matches(authPojo.getPassword(), userAppVerif.getPassword())) throw new EntityNotFoundException("invalid password");
-        if (userAppVerif.isDeleted()) throw new NotAuthorizedException("denied");
-        return userAppVerif;
+    public Customer connectUsers(AuthPojo authPojo){
+        Optional<Customer> customerOptional = customerRepository.findByEmail(authPojo.getEmail());
+        if (customerOptional .isEmpty()) throw new EntityNotFoundException("invalid user");
+        if (!passwordEncoder.matches(authPojo.getPassword(), customerOptional.get().getPassword())) throw new EntityNotFoundException("invalid password");
+        if (customerOptional.get().isDeleted()) throw new NotAuthorizedException("denied");
+        return customerOptional.get();
     }
 
-    public UserApp updateUser(UserApp userApp){
-        Optional<UserApp> usersVerif = usersRepository.findById(userApp.getId());
+    public Customer updateUser(Customer customer){
+        Optional<Customer> usersVerif = customerRepository.findById(customer.getId());
         if (usersVerif.isEmpty()) throw new EntityNotFoundException("invalid user");
-        return usersRepository.save(userApp);
+        return customerRepository.save(customer);
     }
 
-    public UserApp deleteUser(Long id){
-        Optional<UserApp> usersVerif = usersRepository.findById(id);
+    public Customer deleteUser(Long id){
+        Optional<Customer> usersVerif = customerRepository.findById(id);
         if (usersVerif.isEmpty()) throw new EntityNotFoundException("invalid");
-        UserApp userApp = usersVerif.get();
-        userApp.setDeleted(!userApp.isDeleted());
-        return usersRepository.save(userApp);
+        Customer customer = usersVerif.get();
+        customer.setDeleted(!customer.isDeleted());
+        return customerRepository.save(customer);
     }
 
 
-    public UserApp getUserById(Long userId) {
-        return usersRepository.findById(userId).orElse(null);
+    public Customer getUserById(Long userId) {
+        return customerRepository.findById(userId).orElse(null);
     }
 }

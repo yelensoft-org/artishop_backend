@@ -10,26 +10,24 @@ import java.time.format.DateTimeFormatter;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(NoteFundException.class)
-    public ApiErrorResponse handleNoteFundException(NoteFundException ex, WebRequest request) {
-        ApiErrorResponse response = new ApiErrorResponse(
+    @ExceptionHandler(NotFoundException.class)
+    public ApiErrorResponse handleNoteFundException(NotFoundException ex, WebRequest request) {
+        return new ApiErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 request.getDescription(false)
         );
-        return response;
     }
 
     //    -----------------------------------------------------------------------------
     @ExceptionHandler(Exception.class)
     public ApiErrorResponse handleGenericException(Exception ex, WebRequest request) {
-        ApiErrorResponse response = new ApiErrorResponse(
+        return new ApiErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 ex.getMessage(),
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 request.getDescription(false)
         );
-        return response ;
     }
 }

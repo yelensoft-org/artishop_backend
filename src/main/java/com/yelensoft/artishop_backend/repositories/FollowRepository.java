@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface FollowRepository extends JpaRepository<Follow, Long> {
-    Follow findByUserAppIdAndStoreId(Long userId,Long storeId);
+    Follow findByCustomerIdAndStoreId(Long customerId, Long storeId);
     List<Follow> findByStoreId(Long storeId);
 }

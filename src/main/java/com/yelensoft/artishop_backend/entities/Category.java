@@ -1,6 +1,6 @@
 package com.yelensoft.artishop_backend.entities;
 
-import com.yelensoft.artishop_backend.enumClass.SizeType;
+import com.yelensoft.artishop_backend.enums.SizeType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
